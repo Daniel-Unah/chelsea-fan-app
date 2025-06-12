@@ -27,11 +27,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100 dark:bg-black min-h-screen flex flex-col`}
       >
         <AuthProvider>
           <Navbar />
-          {children}
+          <main className="flex-1 w-full max-w-5xl mx-auto p-4">
+            {children}
+          </main>
+          <footer className="w-full bg-blue-900 text-white text-center py-4 mt-8">
+            &copy; {new Date().getFullYear()} Chelsea Fan App. Not affiliated with Chelsea FC.
+          </footer>
         </AuthProvider>
       </body>
     </html>
