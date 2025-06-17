@@ -109,10 +109,14 @@ export async function fetchPollOptions(pollId: number): Promise<PollOption[]> {
 
 export async function voteInPoll(pollId: number, optionId: number): Promise<void> {
   try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
     const { data: existingVote, error: fetchError } = await supabase
       .from('poll_votes')
       .select('id')
       .eq('poll_id', pollId)
+      .eq('user_id', user.id)
       .single();
 
     if (fetchError && fetchError.code !== 'PGRST116') {
@@ -124,14 +128,19 @@ export async function voteInPoll(pollId: number, optionId: number): Promise<void
       const { error: updateError } = await supabase
         .from('poll_votes')
         .update({ option_id: optionId })
-        .eq('poll_id', pollId);
+        .eq('poll_id', pollId)
+        .eq('user_id', user.id);
 
       if (updateError) throw updateError;
     } else {
       // Create new vote
       const { error: insertError } = await supabase
         .from('poll_votes')
-        .insert({ poll_id: pollId, option_id: optionId });
+        .insert({ 
+          poll_id: pollId, 
+          option_id: optionId,
+          user_id: user.id 
+        });
 
       if (insertError) throw insertError;
     }
