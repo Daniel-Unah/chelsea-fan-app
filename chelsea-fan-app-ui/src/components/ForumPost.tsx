@@ -97,81 +97,115 @@ export default function ForumPost({ forumId }: ForumPostProps) {
     });
   };
 
-  if (loading) return <div className="text-gray-500">Loading posts...</div>;
-  if (error) return <div className="text-red-500">Error: {error}</div>;
+  if (loading) return (
+    <div className="flex justify-center items-center py-8">
+      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="bg-red-50 dark:bg-red-900/50 text-red-700 dark:text-red-100 p-4 rounded-lg">
+      Error: {error}
+    </div>
+  );
 
   return (
     <div className="space-y-6">
       {/* Create new post form */}
       {user && (
-        <form onSubmit={handleCreatePost} className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h3 className="text-lg font-semibold mb-4">Create New Post</h3>
-          <div className="space-y-4">
-            <input
-              type="text"
-              value={newPostTitle}
-              onChange={(e) => setNewPostTitle(e.target.value)}
-              placeholder="Post title"
-              className="w-full p-2 border rounded"
-              required
-            />
-            <textarea
-              value={newPostContent}
-              onChange={(e) => setNewPostContent(e.target.value)}
-              placeholder="Post content"
-              className="w-full p-2 border rounded min-h-[100px]"
-              required
-            />
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-            >
-              Create Post
-            </button>
+        <form onSubmit={handleCreatePost} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Create New Post</h3>
+            <div className="space-y-4">
+              <div>
+                <input
+                  type="text"
+                  value={newPostTitle}
+                  onChange={(e) => setNewPostTitle(e.target.value)}
+                  placeholder="Post title"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  required
+                />
+              </div>
+              <div>
+                <textarea
+                  value={newPostContent}
+                  onChange={(e) => setNewPostContent(e.target.value)}
+                  placeholder="Post content"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white min-h-[100px]"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              >
+                Create Post
+              </button>
+            </div>
           </div>
         </form>
       )}
 
       {/* Posts list with comments */}
-      <div className="space-y-4">
+      <div className="space-y-6">
         {posts.map((post) => (
-          <div key={post.id} className="bg-white dark:bg-gray-800 rounded-lg shadow">
+          <div key={post.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             {/* Post content */}
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-2">{post.content}</p>
-              <div className="text-sm text-gray-500">
-                <span>Posted by {post.user?.email}</span>
+            <div className="p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{post.title}</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">{post.content}</p>
+              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                <span className="font-medium text-gray-700 dark:text-gray-300">{post.user?.email}</span>
                 <span className="mx-2">•</span>
                 <span>{formatDate(post.created_at)}</span>
               </div>
             </div>
 
             {/* Comments section */}
-            <div className="border-t dark:border-gray-700">
-              <div className="p-4">
+            <div className="border-t border-gray-200 dark:border-gray-700">
+              <div className="p-6">
                 <button
                   onClick={() => setExpandedPost(expandedPost === post.id ? null : post.id)}
-                  className="text-blue-600 hover:text-blue-700 mb-4"
+                  className="flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
                 >
-                  {expandedPost === post.id ? 'Hide Comments' : 'Show Comments'} 
-                  {comments[post.id]?.length ? ` (${comments[post.id].length})` : ''}
+                  <svg
+                    className={`w-5 h-5 mr-2 transform transition-transform ${
+                      expandedPost === post.id ? 'rotate-90' : ''
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                  {expandedPost === post.id ? 'Hide Comments' : 'Show Comments'}
+                  {comments[post.id]?.length ? (
+                    <span className="ml-2 px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
+                      {comments[post.id].length}
+                    </span>
+                  ) : null}
                 </button>
 
                 {expandedPost === post.id && (
-                  <div className="space-y-4">
+                  <div className="mt-4 space-y-4">
                     {/* Create comment form */}
                     {user && (
-                      <div className="mb-4">
+                      <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                         <textarea
                           value={newComments[post.id] || ''}
                           onChange={(e) => setNewComments(prev => ({ ...prev, [post.id]: e.target.value }))}
                           placeholder="Add a comment..."
-                          className="w-full p-2 border rounded min-h-[100px] mb-2"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white min-h-[100px]"
                         />
                         <button
                           onClick={() => handleCreateComment(post.id)}
-                          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                          className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
                         >
                           Post Comment
                         </button>
@@ -181,10 +215,10 @@ export default function ForumPost({ forumId }: ForumPostProps) {
                     {/* Comments list */}
                     <div className="space-y-4">
                       {comments[post.id]?.map((comment) => (
-                        <div key={comment.id} className="bg-gray-50 dark:bg-gray-700 rounded p-3">
+                        <div key={comment.id} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                           <p className="text-gray-700 dark:text-gray-300 mb-2">{comment.content}</p>
-                          <div className="text-sm text-gray-500">
-                            <span>Posted by {comment.user?.email}</span>
+                          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                            <span className="font-medium text-gray-700 dark:text-gray-300">{comment.user?.email}</span>
                             <span className="mx-2">•</span>
                             <span>{formatDate(comment.created_at)}</span>
                           </div>

@@ -27,50 +27,81 @@ export default function CommunityPage() {
     setShowCreatePoll(false);
   };
 
-  if (loading) return <div className="text-gray-500">Loading...</div>;
-  if (error) return <div className="text-red-500">Error: {error}</div>;
+  if (loading) return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
+  
+  if (error) return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 p-4 rounded-lg shadow-lg">
+        Error: {error}
+      </div>
+    </div>
+  );
+  
   if (!user) return null;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Community</h1>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Forums Section */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-semibold mb-4">Discussion Forums</h2>
-          {selectedForum ? (
-            <div>
-              <button
-                onClick={() => setSelectedForum(null)}
-                className="mb-4 text-blue-600 hover:text-blue-700"
-              >
-                ← Back to Forums
-              </button>
-              <ForumPost forumId={selectedForum} />
-            </div>
-          ) : (
-            <ForumList onSelectForum={setSelectedForum} />
-          )}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl sm:tracking-tight lg:text-6xl">
+            Chelsea Community
+          </h1>
+          <p className="mt-5 max-w-xl mx-auto text-xl text-gray-500 dark:text-gray-400">
+            Join the discussion with fellow Chelsea fans
+          </p>
         </div>
-
-        {/* Polls Section */}
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-semibold">Fan Polls</h2>
-            <button
-              onClick={() => setShowCreatePoll(!showCreatePoll)}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-            >
-              {showCreatePoll ? 'Cancel' : 'Create Poll'}
-            </button>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Forums Section */}
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Discussion Forums
+                </h2>
+                {selectedForum && (
+                  <button
+                    onClick={() => setSelectedForum(null)}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  >
+                    ← Back to Forums
+                  </button>
+                )}
+              </div>
+              {selectedForum ? (
+                <ForumPost forumId={selectedForum} />
+              ) : (
+                <ForumList onSelectForum={setSelectedForum} />
+              )}
+            </div>
           </div>
-          
-          {showCreatePoll ? (
-            <CreatePoll onPollCreated={handlePollCreated} />
-          ) : (
-            <PollList />
-          )}
+
+          {/* Polls Section */}
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Fan Polls
+                </h2>
+                <button
+                  onClick={() => setShowCreatePoll(!showCreatePoll)}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                >
+                  {showCreatePoll ? 'Cancel' : 'Create Poll'}
+                </button>
+              </div>
+              
+              {showCreatePoll ? (
+                <CreatePoll onPollCreated={handlePollCreated} />
+              ) : (
+                <PollList />
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
