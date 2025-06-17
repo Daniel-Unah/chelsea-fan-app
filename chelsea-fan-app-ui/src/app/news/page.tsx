@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { fetchNews } from '@/services/fetchNews';
 import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
+import CommentBox from '@/components/CommentBox';
 
 export default function NewsPage() {
   const [news, setNews] = useState<any[]>([]);
@@ -36,22 +37,25 @@ export default function NewsPage() {
       {!loading && news.length === 0 && !error && <p>No news articles found.</p>}
       <div className="flex flex-col gap-6">
         {news.map((item) => (
-          <div key={item.id} className="bg-white dark:bg-gray-900 rounded shadow p-4 flex gap-4">
-            {item.image_url && (
-              <div className="flex-shrink-0">
-                <Image src={item.image_url} alt={item.title} width={120} height={80} className="rounded object-cover" />
-              </div>
-            )}
-            <div>
-              <h2 className="text-xl font-semibold mb-1">{item.title}</h2>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
-                {item.created_at ? new Date(item.created_at).toLocaleDateString() : ''}
-              </p>
-              <p className="mb-2">{item.body.length > 120 ? item.body.slice(0, 120) + '...' : item.body}</p>
-              {item.source_url && (
-                <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">Read more</a>
+          <div key={item.id} className="bg-white dark:bg-gray-900 rounded shadow p-4 flex flex-col gap-4">
+            <div className="flex gap-4">
+              {item.image_url && (
+                <div className="flex-shrink-0">
+                  <Image src={item.image_url} alt={item.title} width={120} height={80} className="rounded object-cover" />
+                </div>
               )}
+              <div>
+                <h2 className="text-xl font-semibold mb-1">{item.title}</h2>
+                <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
+                  {item.created_at ? new Date(item.created_at).toLocaleDateString() : ''}
+                </p>
+                <p className="mb-2">{item.body.length > 120 ? item.body.slice(0, 120) + '...' : item.body}</p>
+                {item.source_url && (
+                  <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">Read more</a>
+                )}
+              </div>
             </div>
+            <CommentBox target="news" targetId={item.id} />
           </div>
         ))}
       </div>
