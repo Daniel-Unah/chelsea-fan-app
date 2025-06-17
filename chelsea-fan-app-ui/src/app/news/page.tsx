@@ -1,19 +1,32 @@
 "use client";
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { fetchNews } from '@/services/fetchNews';
 import Image from 'next/image';
+import { useAuth } from '@/context/AuthContext';
 
 export default function NewsPage() {
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const { user } = useAuth();
 
   useEffect(() => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
     fetchNews()
       .then((data) => setNews(data || []))
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [user, router]);
+
+  if (!user) {
+    return null; // Will redirect in useEffect
+  }
 
   return (
     <div className="max-w-3xl mx-auto py-8">
