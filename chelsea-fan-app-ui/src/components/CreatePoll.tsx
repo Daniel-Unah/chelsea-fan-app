@@ -34,15 +34,38 @@ export default function CreatePoll({ onPollCreated }: CreatePollProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user) {
+      setError('You must be logged in to create a poll');
+      return;
+    }
+
+    // Validate form data
+    if (!title.trim()) {
+      setError('Title is required');
+      return;
+    }
+    if (!description.trim()) {
+      setError('Description is required');
+      return;
+    }
+    if (!endDate) {
+      setError('End date is required');
+      return;
+    }
+    if (options.filter(option => option.trim() !== '').length < 2) {
+      setError('At least 2 options are required');
+      return;
+    }
 
     try {
       setLoading(true);
       setError(null);
 
+      console.log('Submitting poll with user:', user.id);
+
       await createPoll({
-        title,
-        description,
+        title: title.trim(),
+        description: description.trim(),
         endDate: new Date(endDate).toISOString(),
         options: options.filter(option => option.trim() !== '')
       });

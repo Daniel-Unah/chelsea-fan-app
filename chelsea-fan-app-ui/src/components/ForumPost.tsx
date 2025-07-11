@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { ForumPost as ForumPostType, ForumComment, fetchForumPosts, fetchForumComments, createForumPost, createForumComment } from '@/services/forums';
 import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabaseClient';
 
 interface ForumPostProps {
   forumId: number;
@@ -32,8 +33,17 @@ export default function ForumPost({ forumId }: ForumPostProps) {
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchForumPosts(forumId);
-      setPosts(data);
+      // We need to get the forum name first, then use it as category
+      const { data: forums } = await supabase
+        .from('forums')
+        .select('name')
+        .eq('id', forumId)
+        .single();
+      
+      if (forums) {
+        const data = await fetchForumPosts(forums.name);
+        setPosts(data);
+      }
     } catch (e) {
       console.error('Error loading posts:', e);
       setError(e instanceof Error ? e.message : 'Failed to load posts');
@@ -58,10 +68,19 @@ export default function ForumPost({ forumId }: ForumPostProps) {
 
     try {
       setError(null);
-      const post = await createForumPost(forumId, newPostTitle, newPostContent);
-      setPosts([post, ...posts]);
-      setNewPostTitle('');
-      setNewPostContent('');
+      // Get the forum name to use as category
+      const { data: forums } = await supabase
+        .from('forums')
+        .select('name')
+        .eq('id', forumId)
+        .single();
+      
+      if (forums) {
+        const post = await createForumPost(newPostTitle, newPostContent, forums.name);
+        setPosts([post, ...posts]);
+        setNewPostTitle('');
+        setNewPostContent('');
+      }
     } catch (e) {
       console.error('Error creating post:', e);
       setError(e instanceof Error ? e.message : 'Failed to create post');
@@ -156,7 +175,7 @@ export default function ForumPost({ forumId }: ForumPostProps) {
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{post.title}</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-4">{post.content}</p>
               <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                <span className="font-medium text-gray-700 dark:text-gray-300">{post.user?.email}</span>
+                <span className="font-medium text-gray-700 dark:text-gray-300">User</span>
                 <span className="mx-2">•</span>
                 <span>{formatDate(post.created_at)}</span>
               </div>
@@ -218,7 +237,7 @@ export default function ForumPost({ forumId }: ForumPostProps) {
                         <div key={comment.id} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                           <p className="text-gray-700 dark:text-gray-300 mb-2">{comment.content}</p>
                           <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                            <span className="font-medium text-gray-700 dark:text-gray-300">{comment.user?.email}</span>
+                            <span className="font-medium text-gray-700 dark:text-gray-300">User</span>
                             <span className="mx-2">•</span>
                             <span>{formatDate(comment.created_at)}</span>
                           </div>

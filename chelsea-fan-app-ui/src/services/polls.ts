@@ -152,6 +152,14 @@ export async function voteInPoll(pollId: number, optionId: number): Promise<void
 
 export async function createPoll(data: CreatePollData): Promise<void> {
   try {
+    console.log('Creating poll with data:', data);
+    
+    // Get current user
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      throw new Error('User must be authenticated to create a poll');
+    }
+
     // Create poll
     const { data: poll, error: pollError } = await supabase
       .from('polls')
@@ -159,25 +167,41 @@ export async function createPoll(data: CreatePollData): Promise<void> {
         title: data.title,
         description: data.description,
         end_date: data.endDate,
+        user_id: user.id,
       })
       .select()
       .single();
 
-    if (pollError) throw pollError;
+    if (pollError) {
+      console.error('Poll creation error:', pollError);
+      throw new Error(`Failed to create poll: ${pollError.message}`);
+    }
+
+    console.log('Poll created successfully:', poll);
 
     // Create poll options
+    const optionsData = data.options.map((option) => ({
+      poll_id: poll.id,
+      option_text: option,
+    }));
+    
+    console.log('Creating poll options:', optionsData);
+    
     const { error: optionsError } = await supabase
       .from('poll_options')
-      .insert(
-        data.options.map((option) => ({
-          poll_id: poll.id,
-          option_text: option,
-        }))
-      );
+      .insert(optionsData);
 
-    if (optionsError) throw optionsError;
+    if (optionsError) {
+      console.error('Poll options creation error:', optionsError);
+      throw new Error(`Failed to create poll options: ${optionsError.message}`);
+    }
+
+    console.log('Poll options created successfully');
   } catch (error) {
     console.error('Error creating poll:', error);
-    throw error;
+    if (error instanceof Error) {
+      throw new Error(`Failed to create poll: ${error.message}`);
+    }
+    throw new Error('Failed to create poll: Unknown error');
   }
 } 
