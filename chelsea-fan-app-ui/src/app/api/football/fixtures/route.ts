@@ -25,7 +25,7 @@ export async function GET() {
     
     // Sort matches by date (most recent first)
     if (data.matches) {
-      data.matches.sort((a: any, b: any) => {
+      data.matches.sort((a: { utcDate: string }, b: { utcDate: string }) => {
         const dateA = new Date(a.utcDate);
         const dateB = new Date(b.utcDate);
         return dateB.getTime() - dateA.getTime(); // Most recent first

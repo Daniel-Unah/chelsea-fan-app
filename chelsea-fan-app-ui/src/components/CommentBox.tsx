@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Comment, fetchComments, addComment, deleteComment } from '@/services/comments';
 import { useAuth } from '@/context/AuthContext';
 
@@ -15,11 +15,7 @@ export default function CommentBox({ target, targetId }: CommentBoxProps) {
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
-  useEffect(() => {
-    loadComments();
-  }, [target, targetId]);
-
-  const loadComments = async () => {
+  const loadComments = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -31,7 +27,12 @@ export default function CommentBox({ target, targetId }: CommentBoxProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [target, targetId]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    loadComments();
+  }, [target, targetId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

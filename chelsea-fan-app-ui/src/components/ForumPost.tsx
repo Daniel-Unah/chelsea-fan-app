@@ -19,6 +19,7 @@ export default function ForumPost({ forumId }: ForumPostProps) {
   const [newComments, setNewComments] = useState<Record<number, string>>({});
   const { user } = useAuth();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     loadPosts();
   }, [forumId]);
