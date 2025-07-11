@@ -31,11 +31,13 @@ export default function RootLayout({
       >
         <AuthProvider>
           <Navbar />
-          <main className="flex-1 w-full max-w-5xl mx-auto p-4">
+          <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
             {children}
           </main>
-          <footer className="w-full bg-blue-900 text-white text-center py-4 mt-8">
-            &copy; {new Date().getFullYear()} Chelsea Fan App. Not affiliated with Chelsea FC.
+          <footer className="w-full bg-blue-900 text-white text-center py-4 mt-8 px-4">
+            <p className="text-sm">
+              &copy; {new Date().getFullYear()} Chelsea Fan App. Not affiliated with Chelsea FC.
+            </p>
           </footer>
         </AuthProvider>
       </body>
