@@ -1,19 +1,10 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { fetchNews } from '@/services/fetchNews';
+import { fetchNews, NewsItem } from '@/services/fetchNews';
 import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import CommentBox from '@/components/CommentBox';
-
-interface NewsItem {
-  id: number;
-  title: string;
-  body: string;
-  image_url?: string;
-  source_url?: string;
-  created_at: string;
-}
 
 export default function NewsPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -46,25 +37,63 @@ export default function NewsPage() {
       {!loading && news.length === 0 && !error && <p>No news articles found.</p>}
       <div className="flex flex-col gap-6">
         {news.map((item) => (
-          <div key={item.id} className="bg-white dark:bg-gray-900 rounded shadow p-4 flex flex-col gap-4">
-            <div className="flex gap-4">
+          <div key={item.id} className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <div className="flex gap-6">
               {item.image_url && (
                 <div className="flex-shrink-0">
-                  <Image src={item.image_url} alt={item.title} width={120} height={80} className="rounded object-cover" />
+                  <Image 
+                    src={item.image_url} 
+                    alt={item.title} 
+                    width={200} 
+                    height={150} 
+                    className="rounded-lg object-cover" 
+                  />
                 </div>
               )}
-              <div>
-                <h2 className="text-xl font-semibold mb-1">{item.title}</h2>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
-                  {item.created_at ? new Date(item.created_at).toLocaleDateString() : ''}
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  {item.source_name && (
+                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full">
+                      {item.source_name}
+                    </span>
+                  )}
+                  {item.author && (
+                    <span className="text-gray-500 dark:text-gray-400 text-sm">
+                      by {item.author}
+                    </span>
+                  )}
+                </div>
+                <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{item.title}</h2>
+                <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
+                  {item.created_at ? new Date(item.created_at).toLocaleDateString('en-GB', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  }) : ''}
                 </p>
-                <p className="mb-2">{item.body.length > 120 ? item.body.slice(0, 120) + '...' : item.body}</p>
+                <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
+                  {item.body.length > 200 ? item.body.slice(0, 200) + '...' : item.body}
+                </p>
                 {item.source_url && (
-                  <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">Read more</a>
+                  <a 
+                    href={item.source_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+                  >
+                    Read full article
+                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
                 )}
               </div>
             </div>
-            <CommentBox target="news" targetId={item.id} />
+            <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <CommentBox target="news" targetId={item.id} />
+            </div>
           </div>
         ))}
       </div>
