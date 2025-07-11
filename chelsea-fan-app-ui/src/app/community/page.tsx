@@ -9,7 +9,6 @@ import CreatePoll from '@/components/CreatePoll';
 
 export default function CommunityPage() {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedForum, setSelectedForum] = useState<number | null>(null);
   const [showCreatePoll, setShowCreatePoll] = useState(false);
   const router = useRouter();
@@ -30,14 +29,6 @@ export default function CommunityPage() {
   if (loading) return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-    </div>
-  );
-  
-  if (error) return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-      <div className="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 p-4 rounded-lg shadow-lg">
-        Error: {error}
-      </div>
     </div>
   );
   

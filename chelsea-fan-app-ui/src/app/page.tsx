@@ -1,7 +1,4 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { fetchNews } from '@/services/fetchNews';
-import { fetchUpcomingMatches, fetchLatestResults } from '@/services/matches';
 import Link from 'next/link';
 
 export default function Home() {

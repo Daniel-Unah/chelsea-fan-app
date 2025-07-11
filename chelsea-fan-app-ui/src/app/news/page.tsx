@@ -6,8 +6,17 @@ import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import CommentBox from '@/components/CommentBox';
 
+interface NewsItem {
+  id: number;
+  title: string;
+  body: string;
+  image_url?: string;
+  source_url?: string;
+  created_at: string;
+}
+
 export default function NewsPage() {
-  const [news, setNews] = useState<any[]>([]);
+  const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
