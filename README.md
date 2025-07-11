@@ -24,7 +24,7 @@ I built this app because I wanted a dedicated platform for Chelsea fans to get a
 - **APIs**: 
   - Football-data.org for fixtures and squad data
   - NewsAPI.org for Chelsea news
-- **Deployment**: Ready for Vercel deployment
+- **Deployment**: Railway
 
 ## Getting Started
 
