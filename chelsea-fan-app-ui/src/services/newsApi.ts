@@ -1,9 +1,6 @@
 // News API service for Chelsea news
 // Using newsapi.org
 
-const API_KEY = process.env.NEXT_PUBLIC_NEWS_API_KEY;
-const BASE_URL = 'https://newsapi.org/v2';
-
 export interface NewsApiArticle {
   source: {
     id: string;
@@ -27,14 +24,8 @@ export interface NewsApiResponse {
 // Fetch Chelsea news
 export async function fetchChelseaNews(): Promise<NewsApiArticle[]> {
   try {
-    if (!API_KEY) {
-      throw new Error('News API key not configured');
-    }
-
-    // More specific Chelsea search terms
-    const response = await fetch(
-      `${BASE_URL}/everything?q=("Chelsea FC" OR "Chelsea Football Club" OR "Stamford Bridge" OR "Enzo Maresca" OR "Cole Palmer" OR "Enzo Fernandez") AND (football OR Premier League)&language=en&sortBy=publishedAt&pageSize=30&apiKey=${API_KEY}`
-    );
+    // Call the Next.js API route instead of NewsAPI directly
+    const response = await fetch('/api/news');
 
     if (!response.ok) {
       throw new Error(`News API request failed: ${response.status}`);
