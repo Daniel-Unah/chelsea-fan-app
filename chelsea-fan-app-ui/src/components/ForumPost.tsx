@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ForumPost as ForumPostType, ForumComment, fetchForumPosts, fetchForumComments, createForumPost, createForumComment } from '@/services/forums';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
@@ -19,18 +19,7 @@ export default function ForumPost({ forumId }: ForumPostProps) {
   const [newComments, setNewComments] = useState<Record<number, string>>({});
   const { user } = useAuth();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    loadPosts();
-  }, [forumId]);
-
-  useEffect(() => {
-    if (expandedPost) {
-      loadComments(expandedPost);
-    }
-  }, [expandedPost]);
-
-  const loadPosts = async () => {
+  const loadPosts = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -51,7 +40,17 @@ export default function ForumPost({ forumId }: ForumPostProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [forumId]);
+
+  useEffect(() => {
+    loadPosts();
+  }, [forumId, loadPosts]);
+
+  useEffect(() => {
+    if (expandedPost) {
+      loadComments(expandedPost);
+    }
+  }, [expandedPost]);
 
   const loadComments = async (postId: number) => {
     try {
