@@ -377,8 +377,8 @@ const FALLBACK_SQUAD: Player[] = [
 export async function fetchRoster(): Promise<Player[]> {
   try {
     // First try to get real data from Football API
-    console.log('Football API key available:', !!process.env.NEXT_PUBLIC_FOOTBALL_API_KEY);
-    if (process.env.NEXT_PUBLIC_FOOTBALL_API_KEY) {
+    console.log('Football API key available:', !!process.env.NEXT_PUBLIC_FOOTBALL_DATA_API_KEY);
+    if (process.env.NEXT_PUBLIC_FOOTBALL_DATA_API_KEY) {
       try {
         console.log('Fetching real Chelsea squad data from API...');
         const apiPlayers = await fetchChelseaSquad();
@@ -391,24 +391,13 @@ export async function fetchRoster(): Promise<Player[]> {
           console.log('No players returned from API, using fallback');
         }
       } catch (apiError) {
-        console.error('Football API error, falling back to database:', apiError);
+        console.error('Football API error, using fallback data:', apiError);
       }
     } else {
       console.log('No Football API key found, using fallback data');
     }
 
-    // Try to get data from Supabase
-    const { data, error } = await supabase
-      .from('players')
-      .select('*')
-      .order('number', { ascending: true });
-    
-    if (!error && data && data.length > 0) {
-      console.log('Using database Chelsea squad data');
-      return data as Player[];
-    }
-    
-    // If no data in Supabase, return fallback data
+    // Use fallback data as primary source when API is not available
     console.log('Using fallback Chelsea squad data');
     return FALLBACK_SQUAD;
     

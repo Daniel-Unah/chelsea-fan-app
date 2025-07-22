@@ -438,7 +438,7 @@ const FALLBACK_FIXTURES: Fixture[] = [
 export async function fetchFixtures(): Promise<Fixture[]> {
   try {
     // First try to get real data from Football API
-    if (process.env.NEXT_PUBLIC_FOOTBALL_API_KEY) {
+    if (process.env.NEXT_PUBLIC_FOOTBALL_DATA_API_KEY) {
       try {
         console.log('Fetching real Chelsea fixtures data from API...');
         const apiFixtures = await fetchChelseaFixtures();
