@@ -29,10 +29,9 @@ export default function CommentBox({ target, targetId }: CommentBoxProps) {
     }
   }, [target, targetId]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     loadComments();
-  }, [target, targetId]);
+  }, [target, targetId, loadComments]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

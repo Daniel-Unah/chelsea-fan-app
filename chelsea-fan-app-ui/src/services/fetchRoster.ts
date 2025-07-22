@@ -1,4 +1,3 @@
-import { supabase } from '@/lib/supabaseClient';
 import { fetchChelseaSquad, transformPlayer } from './footballApi';
 
 export interface Player {
