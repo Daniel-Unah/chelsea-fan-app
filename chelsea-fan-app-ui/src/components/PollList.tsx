@@ -40,9 +40,29 @@ export default function PollList() {
     }
   };
 
-  if (loading) return <div>Loading polls...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
-  if (polls.length === 0) return <div>No polls available</div>;
+  if (loading) return <div className="text-center py-8">Loading polls...</div>;
+  if (error) return (
+    <div className="text-center py-8">
+      <div className="text-red-500 mb-4">{error}</div>
+      <button 
+        onClick={loadPolls}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Try Again
+      </button>
+    </div>
+  );
+  if (polls.length === 0) return (
+    <div className="text-center py-8">
+      <div className="text-gray-500 mb-4">No active polls available</div>
+      <button 
+        onClick={loadPolls}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Refresh
+      </button>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -83,7 +103,22 @@ export default function PollList() {
             })}
           </div>
           <div className="mt-4 text-sm text-gray-500">
-            Ends: {new Date(poll.end_date).toLocaleDateString()}
+            {(() => {
+              const endDate = new Date(poll.end_date);
+              const now = new Date();
+              const timeLeft = endDate.getTime() - now.getTime();
+              const daysLeft = Math.ceil(timeLeft / (1000 * 60 * 60 * 24));
+              
+              if (daysLeft <= 0) {
+                return <span className="text-red-500">Poll ended</span>;
+              } else if (daysLeft === 1) {
+                return <span className="text-orange-500">Ends tomorrow</span>;
+              } else if (daysLeft <= 3) {
+                return <span className="text-orange-500">Ends in {daysLeft} days</span>;
+              } else {
+                return <span>Ends: {endDate.toLocaleDateString()}</span>;
+              }
+            })()}
           </div>
         </div>
       ))}

@@ -25,11 +25,77 @@ interface CreatePollData {
   options: string[];
 }
 
+export async function deleteExpiredPolls(): Promise<void> {
+  try {
+    const currentDate = new Date().toISOString();
+    
+    // First, get the IDs of expired polls
+    const { data: expiredPollIds, error: fetchError } = await supabase
+      .from('polls')
+      .select('id')
+      .lt('end_date', currentDate);
+
+    if (fetchError) {
+      console.error('Error fetching expired poll IDs:', fetchError);
+      throw fetchError;
+    }
+
+    if (!expiredPollIds || expiredPollIds.length === 0) {
+      console.log('No expired polls to delete');
+      return;
+    }
+
+    const pollIds = expiredPollIds.map(poll => poll.id);
+    
+    // Delete poll votes for expired polls first (due to foreign key constraints)
+    const { error: votesError } = await supabase
+      .from('poll_votes')
+      .delete()
+      .in('poll_id', pollIds);
+
+    if (votesError) {
+      console.error('Error deleting poll votes:', votesError);
+      throw votesError;
+    }
+
+    // Delete poll options for expired polls
+    const { error: optionsError } = await supabase
+      .from('poll_options')
+      .delete()
+      .in('poll_id', pollIds);
+
+    if (optionsError) {
+      console.error('Error deleting poll options:', optionsError);
+      throw optionsError;
+    }
+
+    // Delete expired polls
+    const { error: pollsError } = await supabase
+      .from('polls')
+      .delete()
+      .in('id', pollIds);
+
+    if (pollsError) {
+      console.error('Error deleting expired polls:', pollsError);
+      throw pollsError;
+    }
+
+    console.log(`Deleted ${pollIds.length} expired polls successfully`);
+  } catch (error) {
+    console.error('Error deleting expired polls:', error);
+    throw error;
+  }
+}
+
 export async function fetchPolls(): Promise<Poll[]> {
   try {
+    // First, delete any expired polls
+    await deleteExpiredPolls();
+
     const { data: polls, error } = await supabase
       .from('polls')
       .select('*')
+      .gte('end_date', new Date().toISOString()) // Only fetch non-expired polls
       .order('created_at', { ascending: false });
 
     if (error) throw error;
