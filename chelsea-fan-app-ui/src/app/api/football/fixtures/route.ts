@@ -11,7 +11,7 @@ export async function GET() {
     }
 
     // Fetch all competitions for Chelsea (no competition filter)
-    const response = await fetch(`${API_URL}/teams/${CHELSEA_TEAM_ID}/matches?season=2024&limit=100`, {
+    const response = await fetch(`${API_URL}/teams/${CHELSEA_TEAM_ID}/matches?season=2025&limit=100`, {
       headers: {
         'X-Auth-Token': API_KEY,
       },
@@ -23,12 +23,12 @@ export async function GET() {
 
     const data = await response.json();
     
-    // Sort matches by date (most recent first)
+    // Sort matches by date (chronological order - earliest first for upcoming fixtures)
     if (data.matches) {
       data.matches.sort((a: { utcDate: string }, b: { utcDate: string }) => {
         const dateA = new Date(a.utcDate);
         const dateB = new Date(b.utcDate);
-        return dateB.getTime() - dateA.getTime(); // Most recent first
+        return dateA.getTime() - dateB.getTime(); // Earliest first (chronological order)
       });
     }
     

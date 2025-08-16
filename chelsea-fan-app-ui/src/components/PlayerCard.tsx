@@ -38,19 +38,19 @@ export default function PlayerCard({ player }: PlayerCardProps) {
               <span className="font-bold text-gray-900 dark:text-white">{player.height}</span>
             </div>
           )}
-          {player.goals !== undefined && player.goals > 0 && (
+          {player.goals !== undefined && (
             <div className="flex justify-between items-center py-2 px-3 bg-green-50 dark:bg-green-900/20 rounded">
               <span className="text-green-700 dark:text-green-400 font-medium">Goals</span>
               <span className="font-bold text-green-700 dark:text-green-400">{player.goals}</span>
             </div>
           )}
-          {player.assists !== undefined && player.assists > 0 && (
+          {player.assists !== undefined && (
             <div className="flex justify-between items-center py-2 px-3 bg-blue-50 dark:bg-blue-900/20 rounded">
               <span className="text-blue-700 dark:text-blue-400 font-medium">Assists</span>
               <span className="font-bold text-blue-700 dark:text-blue-400">{player.assists}</span>
             </div>
           )}
-          {player.appearances !== undefined && player.appearances > 0 && (
+          {player.appearances !== undefined && (
             <div className="flex justify-between items-center py-2 px-3 bg-purple-50 dark:bg-purple-900/20 rounded">
               <span className="text-purple-700 dark:text-purple-400 font-medium">Apps</span>
               <span className="font-bold text-purple-700 dark:text-purple-400">{player.appearances}</span>

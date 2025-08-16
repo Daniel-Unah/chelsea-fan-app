@@ -14,42 +14,42 @@ export interface Fixture {
   created_at: string;
 }
 
-// Fallback Chelsea fixtures data (2024/25 season - actual fixtures)
+// Fallback Chelsea fixtures data (2025/26 season - upcoming fixtures)
 const FALLBACK_FIXTURES: Fixture[] = [
   {
     id: 1,
-    date: "2024-08-18T14:00:00Z",
+    date: "2025-08-16T14:00:00Z",
     competition: "Premier League",
     opponent: "Manchester City",
     opponent_logo: "https://crests.football-data.org/50.png",
     home_or_away: "away",
-    score: "1-3",
+    score: undefined,
     venue: "Etihad Stadium",
-    status: "FT",
+    status: "SCHEDULED",
     created_at: new Date().toISOString(),
   },
   {
     id: 2,
-    date: "2024-08-25T16:30:00Z",
+    date: "2025-08-23T16:30:00Z",
     competition: "Premier League",
     opponent: "West Ham United",
     opponent_logo: "https://crests.football-data.org/48.png",
     home_or_away: "home",
-    score: "2-1",
+    score: undefined,
     venue: "Stamford Bridge",
-    status: "FT",
+    status: "SCHEDULED",
     created_at: new Date().toISOString(),
   },
   {
     id: 3,
-    date: "2024-09-01T14:00:00Z",
+    date: "2025-08-30T14:00:00Z",
     competition: "Premier League",
     opponent: "Crystal Palace",
     opponent_logo: "https://crests.football-data.org/52.png",
     home_or_away: "away",
-    score: "0-2",
+    score: undefined,
     venue: "Selhurst Park",
-    status: "FT",
+    status: "SCHEDULED",
     created_at: new Date().toISOString(),
   },
   {

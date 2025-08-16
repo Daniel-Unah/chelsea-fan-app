@@ -57,19 +57,29 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
           )}
         </div>
         <div className="flex-1 text-center">
-          <div className="flex items-center justify-center gap-3">
+          <div className="grid grid-cols-3 items-center gap-2">
+            {/* Chelsea - Fixed width column */}
             <div className="flex flex-col items-center">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-bold">CFC</span>
+              <div className="w-8 h-8 relative">
+                <Image
+                  src="/chelsea-logo.png"
+                  alt="Chelsea FC"
+                  fill
+                  className="object-contain"
+                />
               </div>
-              <span className="text-xs text-gray-600 dark:text-gray-300 mt-1">Chelsea</span>
+              <span className="text-xs text-gray-600 dark:text-gray-300 mt-1 text-center">Chelsea</span>
             </div>
+            
+            {/* VS and Score - Fixed width column */}
             <div className="flex flex-col items-center">
               <span className="text-gray-500 font-semibold">vs</span>
               {fixture.score && (
                 <span className="text-lg font-bold">{fixture.score}</span>
               )}
             </div>
+            
+            {/* Opponent - Fixed width column */}
             <div className="flex flex-col items-center">
               {fixture.opponent_logo ? (
                 <div className="w-8 h-8 relative">
@@ -87,7 +97,9 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
                   </span>
                 </div>
               )}
-              <span className="text-xs text-gray-600 dark:text-gray-300 mt-1">{fixture.opponent}</span>
+              <span className="text-xs text-gray-600 dark:text-gray-300 mt-1 text-center break-words">
+                {fixture.opponent}
+              </span>
             </div>
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
@@ -104,12 +116,13 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
             </div>
           ) : (
             <div className="text-right">
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                {matchDate.toLocaleTimeString('en-GB', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </p>
+                             <p className="text-sm text-gray-600 dark:text-gray-300">
+                 {matchDate.toLocaleTimeString('en-US', {
+                   hour: '2-digit',
+                   minute: '2-digit',
+                   hour12: true
+                 })}
+               </p>
               <p className={`text-sm ${getStatusColor(fixture.status)}`}>
                 {getStatusText(fixture.status)}
               </p>
