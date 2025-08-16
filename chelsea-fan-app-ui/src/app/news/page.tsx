@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { fetchNews, NewsItem } from '@/services/fetchNews';
 import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';

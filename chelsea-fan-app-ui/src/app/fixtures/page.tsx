@@ -1,15 +1,12 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { fetchFixtures, Fixture } from '@/services/fetchFixtures';
 import FixtureCard from '@/components/FixtureCard';
-import { useAuth } from '@/context/AuthContext';
 
 export default function FixturesPage() {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth();
 
   useEffect(() => {
     fetchFixtures()

@@ -1,6 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import ForumList from '@/components/ForumList';
 import ForumPost from '@/components/ForumPost';
@@ -8,7 +7,6 @@ import PollList from '@/components/PollList';
 import CreatePoll from '@/components/CreatePoll';
 
 export default function CommunityPage() {
-  const [loading, setLoading] = useState(false);
   const [selectedForum, setSelectedForum] = useState<number | null>(null);
   const [showCreatePoll, setShowCreatePoll] = useState(false);
   const { user } = useAuth();

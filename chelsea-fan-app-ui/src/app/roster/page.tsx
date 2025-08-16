@@ -1,15 +1,12 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { fetchRoster, Player } from '@/services/fetchRoster';
 import PlayerCard from '@/components/PlayerCard';
-import { useAuth } from '@/context/AuthContext';
 
 export default function RosterPage() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth();
 
   useEffect(() => {
     fetchRoster()
