@@ -45,12 +45,12 @@ export default function PlayerCard({ player }: PlayerCardProps) {
               <span className="font-bold text-green-700 dark:text-green-400">{player.goals}</span>
             </div>
           )}
-          {player.assists !== undefined && (
+                    {player.assists !== undefined && (
             <div className="flex justify-between items-center py-2 px-3 bg-blue-50 dark:bg-blue-900/20 rounded min-h-[2.5rem]">
-              <span className="text-blue-700 dark:text-blue-400 font-medium">Assists</span>
+              <span className="text-blue-700 dark:text-blue-400 font-medium">Asts</span>
               <span className="font-bold text-blue-700 dark:text-blue-400">{player.assists}</span>
             </div>
-            )}
+          )}
           {player.appearances !== undefined && (
             <div className="flex justify-between items-center py-2 px-3 bg-purple-50 dark:bg-purple-900/20 rounded min-h-[2.5rem]">
               <span className="text-purple-700 dark:text-purple-400 font-medium">Apps</span>
