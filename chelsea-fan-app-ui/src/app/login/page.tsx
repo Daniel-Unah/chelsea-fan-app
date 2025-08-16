@@ -25,6 +25,8 @@ export default function LoginPage() {
     }
   };
 
+
+
   if (user) {
     router.push("/");
     return null;

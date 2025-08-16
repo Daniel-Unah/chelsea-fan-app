@@ -29,6 +29,8 @@ export default function SignupPage() {
     }
   };
 
+
+
   if (user) {
     router.push("/");
     return null;

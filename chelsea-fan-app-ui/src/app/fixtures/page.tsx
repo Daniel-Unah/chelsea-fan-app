@@ -9,27 +9,17 @@ export default function FixturesPage() {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
-
     fetchFixtures()
       .then((data) => setFixtures(data || []))
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [user, router]);
+  }, []);
 
   // Find the next fixture (first fixture without a score)
   const nextFixture = fixtures.find(fixture => !fixture.score);
-
-  if (!user) {
-    return null; // Will redirect in useEffect
-  }
 
   return (
     <div className="max-w-4xl mx-auto py-4 sm:py-8 px-4 sm:px-6">

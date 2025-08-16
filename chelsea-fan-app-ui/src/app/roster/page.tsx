@@ -9,24 +9,14 @@ export default function RosterPage() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
-
     fetchRoster()
       .then((data) => setPlayers(data || []))
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [user, router]);
-
-  if (!user) {
-    return null; // Will redirect in useEffect
-  }
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto py-8">

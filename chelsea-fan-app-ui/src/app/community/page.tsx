@@ -8,31 +8,14 @@ import PollList from '@/components/PollList';
 import CreatePoll from '@/components/CreatePoll';
 
 export default function CommunityPage() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [selectedForum, setSelectedForum] = useState<number | null>(null);
   const [showCreatePoll, setShowCreatePoll] = useState(false);
-  const router = useRouter();
   const { user } = useAuth();
-
-  useEffect(() => {
-    if (!user) {
-      router.push('/login');
-    } else {
-      setLoading(false);
-    }
-  }, [user, router]);
 
   const handlePollCreated = () => {
     setShowCreatePoll(false);
   };
-
-  if (loading) return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-    </div>
-  );
-  
-  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -78,15 +61,24 @@ export default function CommunityPage() {
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
                   Fan Polls
                 </h2>
-                <button
-                  onClick={() => setShowCreatePoll(!showCreatePoll)}
-                  className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                >
-                  {showCreatePoll ? 'Cancel' : 'Create Poll'}
-                </button>
+                {user ? (
+                  <button
+                    onClick={() => setShowCreatePoll(!showCreatePoll)}
+                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  >
+                    {showCreatePoll ? 'Cancel' : 'Create Poll'}
+                  </button>
+                ) : (
+                  <a
+                    href="/login"
+                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  >
+                    Login to Create Poll
+                  </a>
+                )}
               </div>
               
-              {showCreatePoll ? (
+              {showCreatePoll && user ? (
                 <CreatePoll onPollCreated={handlePollCreated} />
               ) : (
                 <PollList />

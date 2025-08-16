@@ -10,24 +10,14 @@ export default function NewsPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
-
     fetchNews()
       .then((data) => setNews(data || []))
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [user, router]);
-
-  if (!user) {
-    return null; // Will redirect in useEffect
-  }
+  }, []);
 
   return (
     <div className="max-w-3xl mx-auto py-4 sm:py-8 px-4 sm:px-6">
@@ -91,9 +81,21 @@ export default function NewsPage() {
                 )}
               </div>
             </div>
-            <div className="mt-4 sm:mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-              <CommentBox target="news" targetId={item.id} />
-            </div>
+                         <div className="mt-4 sm:mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+               {user ? (
+                 <CommentBox target="news" targetId={item.id} />
+               ) : (
+                 <div className="text-center py-4">
+                   <p className="text-gray-500 dark:text-gray-400 mb-2">Login to comment on this article</p>
+                   <a 
+                     href="/login" 
+                     className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+                   >
+                     Go to Login
+                   </a>
+                 </div>
+               )}
+             </div>
           </div>
         ))}
       </div>
