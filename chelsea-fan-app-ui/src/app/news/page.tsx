@@ -39,17 +39,17 @@ export default function NewsPage() {
         {news.map((item) => (
           <div key={item.id} className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow">
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-              {item.image_url && (
-                <div className="flex-shrink-0 w-full sm:w-auto">
-                  <Image 
-                    src={item.image_url} 
-                    alt={item.title} 
-                    width={200} 
-                    height={150} 
-                    className="rounded-lg object-cover w-full sm:w-[200px] h-[150px]" 
-                  />
-                </div>
-              )}
+                             {item.image_url && (
+                 <div className="flex-shrink-0 w-full sm:w-auto">
+                   <Image 
+                     src={item.image_url} 
+                     alt={item.title} 
+                     width={200} 
+                     height={150} 
+                     className="rounded-lg object-contain w-full sm:w-[200px] h-[150px]" 
+                   />
+                 </div>
+               )}
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   {item.source_name && (

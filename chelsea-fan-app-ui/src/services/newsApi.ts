@@ -178,14 +178,20 @@ async function isTrustedNewsImageUrl(url: string): Promise<boolean> {
   }
 }
 
+// Counter to ensure unique IDs even with simultaneous processing
+let articleIdCounter = 0;
+
 // Transform news API data to our app's format
 export async function transformNewsArticle(article: NewsApiArticle) {
   // Check if image URL is from a trusted domain, otherwise use Chelsea logo
   const isTrusted = await isTrustedNewsImageUrl(article.urlToImage || '');
   const safeImageUrl = isTrusted ? article.urlToImage : '/chelsea-logo.png';
 
+  // Generate truly unique ID using timestamp + counter + random component
+  const uniqueId = Date.now() + (articleIdCounter++ * 1000) + Math.floor(Math.random() * 1000);
+
   return {
-    id: Math.floor(Date.now() + Math.random() * 1000), // Generate unique integer ID
+    id: uniqueId,
     title: article.title,
     body: article.description || article.content || '',
     image_url: safeImageUrl,
