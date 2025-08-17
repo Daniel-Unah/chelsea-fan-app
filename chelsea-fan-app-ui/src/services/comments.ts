@@ -14,13 +14,21 @@ export interface Comment {
 
 export async function fetchComments(target: string, targetId: number) {
   try {
+    console.log('fetchComments called with:', { target, targetId });
+    
     // Fetch the comments
+    console.log('Querying database with:', { target, targetId });
+    
+    // Fetch the comments with proper filtering
     const { data: comments, error: commentsError } = await supabase
       .from('comments')
       .select('*')
       .eq('target', target)
       .eq('target_id', targetId)
       .order('created_at', { ascending: false });
+
+    console.log('Raw comments from database:', comments);
+    console.log('Comments error:', commentsError);
 
     if (commentsError) {
       console.error('Supabase error in fetchComments:', commentsError);
@@ -30,6 +38,7 @@ export async function fetchComments(target: string, targetId: number) {
     // Get the current user's email
     const { data: { user } } = await supabase.auth.getUser();
     const currentUserEmail = user?.email;
+    console.log('Current user email:', currentUserEmail);
 
     // Map the comments with user data
     const commentsWithUsers = (comments || []).map(comment => ({
@@ -39,6 +48,7 @@ export async function fetchComments(target: string, targetId: number) {
       }
     }));
 
+    console.log('Comments with user data:', commentsWithUsers);
     return commentsWithUsers as Comment[];
   } catch (error) {
     console.error('Error in fetchComments:', error);
@@ -51,11 +61,14 @@ export async function fetchComments(target: string, targetId: number) {
 
 export async function addComment(content: string, target: string, targetId: number) {
   try {
+    console.log('addComment called with:', { content, target, targetId });
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
       throw new Error('User must be authenticated to add comments');
     }
+
+    console.log('User authenticated:', user.id);
 
     const { data, error } = await supabase
       .from('comments')
@@ -75,12 +88,17 @@ export async function addComment(content: string, target: string, targetId: numb
       throw new Error(error.message);
     }
 
-    return {
+    console.log('Comment inserted successfully:', data);
+
+    const result = {
       ...data,
       user: {
         email: user.email
       }
     } as Comment;
+
+    console.log('Returning comment with user data:', result);
+    return result;
   } catch (error) {
     console.error('Error in addComment:', error);
     if (error instanceof Error) {

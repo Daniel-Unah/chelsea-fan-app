@@ -178,8 +178,7 @@ async function isTrustedNewsImageUrl(url: string): Promise<boolean> {
   }
 }
 
-// Counter to ensure unique IDs even with simultaneous processing
-let articleIdCounter = 0;
+
 
 // Transform news API data to our app's format
 export async function transformNewsArticle(article: NewsApiArticle) {
@@ -187,11 +186,18 @@ export async function transformNewsArticle(article: NewsApiArticle) {
   const isTrusted = await isTrustedNewsImageUrl(article.urlToImage || '');
   const safeImageUrl = isTrusted ? article.urlToImage : '/chelsea-logo.png';
 
-  // Generate truly unique ID using timestamp + counter + random component
-  const uniqueId = Date.now() + (articleIdCounter++ * 1000) + Math.floor(Math.random() * 1000);
+  // Generate stable ID based on article URL (hash) to ensure consistency
+  // This way, the same article will always have the same ID
+  const urlHash = article.url.split('').reduce((a, b) => {
+    a = ((a << 5) - a) + b.charCodeAt(0);
+    return a & a;
+  }, 0);
+  
+  // Use absolute value and ensure it's positive
+  const stableId = Math.abs(urlHash);
 
   return {
-    id: uniqueId,
+    id: stableId,
     title: article.title,
     body: article.description || article.content || '',
     image_url: safeImageUrl,
