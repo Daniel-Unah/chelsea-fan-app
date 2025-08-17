@@ -165,7 +165,7 @@ async function isTrustedNewsImageUrl(url: string): Promise<boolean> {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ domain: hostname })
         });
-      } catch (error) {
+      } catch {
         // Silently fail if auto-adding domain fails
       }
       return true;
