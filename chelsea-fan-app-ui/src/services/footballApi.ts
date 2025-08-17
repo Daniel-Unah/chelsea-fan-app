@@ -156,6 +156,8 @@ export async function transformFixture(apiFixture: ApiFixture) {
     }
   }
 
+
+
   return {
     id: apiFixture.id,
     date: apiFixture.utcDate,

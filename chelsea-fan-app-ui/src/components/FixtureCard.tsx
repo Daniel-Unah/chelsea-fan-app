@@ -23,22 +23,60 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
         return 'text-blue-600';
       case '1H':
       case '2H':
+      case 'HT':
         return 'text-orange-600';
+      case 'PEN':
+      case 'AET':
+        return 'text-purple-600';
+      case 'PST':
+      case 'CANC':
+      case 'SUSP':
+      case 'INT':
+      case 'ABD':
+      case 'AWD':
+      case 'WO':
+        return 'text-red-600';
       default:
         return 'text-gray-600 dark:text-gray-300';
     }
   };
 
-  const getStatusText = (status?: string) => {
+  const getStatusText = (status?: string, hasScore?: boolean) => {
+    // If there's a score, the game is completed
+    if (hasScore) {
+      return 'Final';
+    }
+    
+    // Otherwise, use the API status
     switch (status) {
       case 'FT':
-        return 'Full Time';
+        return 'Final';
       case 'NS':
         return 'Not Started';
       case '1H':
         return 'First Half';
       case '2H':
         return 'Second Half';
+      case 'HT':
+        return 'Half Time';
+      case 'PEN':
+        return 'Penalties';
+      case 'AET':
+        return 'Extra Time';
+      case 'PST':
+        return 'Postponed';
+      case 'CANC':
+        return 'Cancelled';
+      case 'SUSP':
+        return 'Suspended';
+      case 'INT':
+        return 'Interrupted';
+      case 'ABD':
+        return 'Abandoned';
+      case 'AWD':
+        return 'Technical Loss';
+      case 'WO':
+        return 'Walkover';
       default:
         return 'Scheduled';
     }
@@ -52,9 +90,6 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
         <div className="flex-1 w-full sm:w-auto text-center sm:text-left">
           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">{fixture.competition}</p>
           <p className="font-semibold text-sm sm:text-base">{formattedDate}</p>
-          {fixture.venue && (
-            <p className="text-xs text-gray-500 dark:text-gray-400">{fixture.venue}</p>
-          )}
         </div>
         <div className="flex-1 text-center">
           <div className="grid grid-cols-3 items-center gap-1 sm:gap-2">
@@ -111,7 +146,7 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
             <div className="text-center sm:text-right">
               <p className="text-lg sm:text-xl font-bold">{fixture.score}</p>
               <p className={`text-xs sm:text-sm ${getStatusColor(fixture.status)}`}>
-                {getStatusText(fixture.status)}
+                {getStatusText(fixture.status, true)}
               </p>
             </div>
           ) : (
@@ -120,11 +155,12 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
                 {matchDate.toLocaleTimeString('en-US', {
                   hour: '2-digit',
                   minute: '2-digit',
-                  hour12: true
+                  hour12: true,
+                  timeZone: 'UTC'
                 })}
               </p>
               <p className={`text-xs sm:text-sm ${getStatusColor(fixture.status)}`}>
-                {getStatusText(fixture.status)}
+                {getStatusText(fixture.status, false)}
               </p>
             </div>
           )}
