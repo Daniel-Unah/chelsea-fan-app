@@ -67,9 +67,9 @@ export default function PollList() {
   return (
     <div className="space-y-6">
       {polls.map((poll) => (
-        <div key={poll.id} className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-2">{poll.title}</h3>
-          <p className="text-gray-600 mb-4">{poll.description}</p>
+        <div key={poll.id} className="bg-gray-800 dark:bg-gray-800 p-6 rounded-lg shadow-md">
+          <h3 className="text-xl font-semibold mb-2 text-white">{poll.title}</h3>
+          <p className="text-gray-300 mb-4">{poll.description}</p>
           <div className="space-y-2">
             {poll.options?.map((option) => {
               const totalVotes = poll.options?.reduce((sum, opt) => sum + (opt.votes || 0), 0) || 0;
@@ -83,18 +83,18 @@ export default function PollList() {
                     disabled={hasVoted}
                     className={`w-full p-3 text-left rounded-md transition-colors ${
                       hasVoted
-                        ? 'bg-blue-100 border-2 border-blue-500'
-                        : 'bg-gray-50 hover:bg-gray-100'
+                        ? 'bg-blue-600 border-2 border-blue-400'
+                        : 'bg-gray-700 hover:bg-gray-600'
                     }`}
                   >
                     <div className="flex justify-between items-center">
-                      <span>{option.option_text}</span>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-white font-medium">{option.option_text}</span>
+                      <span className="text-sm text-gray-300">
                         {option.votes || 0} votes ({percentage.toFixed(1)}%)
                       </span>
                     </div>
                     <div
-                      className="absolute inset-0 bg-blue-200 opacity-20 rounded-md"
+                      className="absolute inset-0 bg-blue-400 opacity-30 rounded-md"
                       style={{ width: `${percentage}%` }}
                     />
                   </button>
@@ -102,7 +102,7 @@ export default function PollList() {
               );
             })}
           </div>
-          <div className="mt-4 text-sm text-gray-500">
+          <div className="mt-4 text-sm text-gray-300">
             {(() => {
               const endDate = new Date(poll.end_date);
               const now = new Date();

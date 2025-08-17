@@ -85,44 +85,44 @@ export default function CreatePoll({ onPollCreated }: CreatePollProps) {
   if (!user) return null;
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-      <h3 className="text-lg font-semibold mb-4">Create New Poll</h3>
+    <form onSubmit={handleSubmit} className="bg-gray-800 rounded-lg shadow p-4">
+      <h3 className="text-lg font-semibold mb-4 text-white">Create New Poll</h3>
       
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Title</label>
+          <label className="block text-sm font-medium mb-1 text-gray-300">Title</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white placeholder-gray-400"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Description</label>
+          <label className="block text-sm font-medium mb-1 text-gray-300">Description</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-2 border rounded min-h-[100px]"
+            className="w-full p-2 border border-gray-600 rounded min-h-[100px] bg-gray-700 text-white placeholder-gray-400"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">End Date</label>
+          <label className="block text-sm font-medium mb-1 text-gray-300">End Date</label>
           <input
             type="datetime-local"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Options</label>
+          <label className="block text-sm font-medium mb-1 text-gray-300">Options</label>
           <div className="space-y-2">
             {options.map((option, index) => (
               <div key={index} className="flex gap-2">
@@ -130,7 +130,7 @@ export default function CreatePoll({ onPollCreated }: CreatePollProps) {
                   type="text"
                   value={option}
                   onChange={(e) => updateOption(index, e.target.value)}
-                  className="flex-1 p-2 border rounded"
+                  className="flex-1 p-2 border border-gray-600 rounded bg-gray-700 text-white placeholder-gray-400"
                   placeholder={`Option ${index + 1}`}
                   required
                 />
@@ -138,7 +138,7 @@ export default function CreatePoll({ onPollCreated }: CreatePollProps) {
                   <button
                     type="button"
                     onClick={() => removeOption(index)}
-                    className="px-3 py-2 text-red-600 hover:text-red-700"
+                    className="px-3 py-2 text-red-400 hover:text-red-300"
                   >
                     Remove
                   </button>
@@ -148,14 +148,14 @@ export default function CreatePoll({ onPollCreated }: CreatePollProps) {
             <button
               type="button"
               onClick={addOption}
-              className="text-blue-600 hover:text-blue-700"
+              className="text-blue-400 hover:text-blue-300"
             >
               + Add Option
             </button>
           </div>
         </div>
 
-        {error && <div className="text-red-500">{error}</div>}
+        {error && <div className="text-red-400">{error}</div>}
 
         <button
           type="submit"
