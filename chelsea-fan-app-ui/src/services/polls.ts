@@ -41,7 +41,6 @@ export async function deleteExpiredPolls(): Promise<void> {
     }
 
     if (!expiredPollIds || expiredPollIds.length === 0) {
-      console.log('No expired polls to delete');
       return;
     }
 
@@ -80,7 +79,7 @@ export async function deleteExpiredPolls(): Promise<void> {
       throw pollsError;
     }
 
-    console.log(`Deleted ${pollIds.length} expired polls successfully`);
+
   } catch (error) {
     console.error('Error deleting expired polls:', error);
     throw error;
@@ -218,8 +217,6 @@ export async function voteInPoll(pollId: number, optionId: number): Promise<void
 
 export async function createPoll(data: CreatePollData): Promise<void> {
   try {
-    console.log('Creating poll with data:', data);
-    
     // Get current user
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -243,15 +240,11 @@ export async function createPoll(data: CreatePollData): Promise<void> {
       throw new Error(`Failed to create poll: ${pollError.message}`);
     }
 
-    console.log('Poll created successfully:', poll);
-
     // Create poll options
     const optionsData = data.options.map((option) => ({
       poll_id: poll.id,
       option_text: option,
     }));
-    
-    console.log('Creating poll options:', optionsData);
     
     const { error: optionsError } = await supabase
       .from('poll_options')
@@ -261,8 +254,6 @@ export async function createPoll(data: CreatePollData): Promise<void> {
       console.error('Poll options creation error:', optionsError);
       throw new Error(`Failed to create poll options: ${optionsError.message}`);
     }
-
-    console.log('Poll options created successfully');
   } catch (error) {
     console.error('Error creating poll:', error);
     if (error instanceof Error) {

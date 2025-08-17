@@ -35,8 +35,6 @@ export async function POST(request: Request) {
     // Write the updated config back
     fs.writeFileSync(configPath, configContent, 'utf8');
     
-    console.log(`Added ${domain} to trusted domains in next.config.js`);
-    
     return NextResponse.json({ 
       message: 'Domain added to trusted list', 
       domain,

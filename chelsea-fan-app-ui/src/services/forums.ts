@@ -46,8 +46,6 @@ export interface ForumComment {
 
 export async function fetchForumPosts(category?: string): Promise<ForumPost[]> {
   try {
-    console.log('Fetching forum posts with category:', category);
-    
     let query = supabase
       .from('forum_posts')
       .select('*')
@@ -64,7 +62,6 @@ export async function fetchForumPosts(category?: string): Promise<ForumPost[]> {
       throw new Error(`Failed to fetch forum posts: ${error.message}`);
     }
 
-    console.log('Forum posts fetched successfully:', data);
     return data as ForumPost[];
   } catch (error) {
     console.error('Error in fetchForumPosts:', error);

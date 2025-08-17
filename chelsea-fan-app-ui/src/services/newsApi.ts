@@ -86,7 +86,7 @@ async function isTrustedNewsImageUrl(url: string): Promise<boolean> {
       'cdn.chelseafc.com',
       'www.chelseafc.com',
       'static.chelseafc.com',
-      'resources.chelseafc.com',
+      'resources.chelsea.news',
       'images.chelseafc.com',
       'media.chelseafc.com',
       'assets.chelseafc.com',
@@ -165,9 +165,8 @@ async function isTrustedNewsImageUrl(url: string): Promise<boolean> {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ domain: hostname })
         });
-        console.log(`Auto-added ${hostname} to trusted news domains`);
       } catch (error) {
-        console.log(`Failed to auto-add ${hostname} to trusted news domains:`, error);
+        // Silently fail if auto-adding domain fails
       }
       return true;
     }

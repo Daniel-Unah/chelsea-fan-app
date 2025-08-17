@@ -26,7 +26,6 @@ export default function NewsPage() {
       {!loading && news.length === 0 && !error && <p>No news articles found.</p>}
       <div className="flex flex-col gap-4 sm:gap-6">
         {news.map((item) => {
-          console.log('News item:', { id: item.id, title: item.title });
           return (
             <div key={item.id} className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow">
               <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">

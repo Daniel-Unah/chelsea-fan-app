@@ -101,11 +101,9 @@ export async function fetchNews(): Promise<NewsItem[]> {
     // First try to get real data from News API
     if (process.env.NEXT_PUBLIC_NEWS_API_KEY) {
       try {
-        console.log('Fetching real Chelsea news data from API...');
         const apiArticles = await fetchChelseaNews();
         if (apiArticles.length > 0) {
           const transformedArticles = await Promise.all(apiArticles.map(transformNewsArticle));
-          console.log(`Successfully fetched ${transformedArticles.length} news articles from API`);
           return transformedArticles;
         }
       } catch (apiError) {
@@ -120,12 +118,10 @@ export async function fetchNews(): Promise<NewsItem[]> {
       .order('created_at', { ascending: false });
     
     if (!error && data && data.length > 0) {
-      console.log('Using database Chelsea news data');
       return data as NewsItem[];
     }
     
     // If no data in Supabase, return fallback data
-    console.log('Using fallback Chelsea news data');
     return FALLBACK_NEWS;
     
   } catch (error) {

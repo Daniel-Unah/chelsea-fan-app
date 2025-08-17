@@ -41,28 +41,6 @@ export async function GET() {
 
     const data: ApiResponse = await response.json();
     
-    // Debug: Log what we're getting
-    console.log('Total fixtures returned:', data.matches?.length || 0);
-    if (data.matches && data.matches.length > 0) {
-      // Check what competitions we're getting
-      const competitions = [...new Set(data.matches.map((match: Match) => match.competition?.name))];
-      console.log('Available competitions:', competitions);
-      
-      // Log first few fixtures to see their structure
-      console.log('First 3 fixtures:', data.matches.slice(0, 3).map((match: Match) => ({
-        date: match.utcDate,
-        competition: match.competition?.name,
-        homeTeam: match.homeTeam?.name,
-        awayTeam: match.awayTeam?.name
-      })));
-      
-      // If we only have Premier League, this might be a free tier limitation
-      if (competitions.length === 1 && competitions[0] === 'Premier League') {
-        console.log('Only Premier League fixtures found - this might be a free tier limitation');
-        console.log('The football-data.org free tier typically only provides Premier League data');
-      }
-    }
-    
     // Sort matches by date (chronological order - earliest first for upcoming fixtures)
     if (data.matches) {
       data.matches.sort((a: Match, b: Match) => {

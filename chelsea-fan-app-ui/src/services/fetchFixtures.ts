@@ -440,14 +440,11 @@ export async function fetchFixtures(): Promise<Fixture[]> {
     // First try to get real data from Football API
     if (process.env.NEXT_PUBLIC_FOOTBALL_DATA_API_KEY) {
       try {
-        console.log('Fetching real Chelsea fixtures data from API...');
         const apiFixtures = await fetchChelseaFixtures();
         if (apiFixtures.length > 0) {
           const transformedFixtures = await Promise.all(apiFixtures.map(fixture => transformFixture(fixture)));
-          console.log(`Successfully fetched ${transformedFixtures.length} fixtures from API`);
           return transformedFixtures;
         }
-        console.log('No fixtures returned from API, using fallback data');
       } catch (apiError) {
         console.error('Football API error, falling back to database:', apiError);
       }
@@ -460,12 +457,10 @@ export async function fetchFixtures(): Promise<Fixture[]> {
       .order('date', { ascending: true });
     
     if (!error && data && data.length > 0) {
-      console.log('Using database Chelsea fixtures data');
       return data as Fixture[];
     }
     
     // If no data in Supabase, return fallback data
-    console.log('Using fallback Chelsea fixtures data');
     return FALLBACK_FIXTURES;
     
   } catch (error) {

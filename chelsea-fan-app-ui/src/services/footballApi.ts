@@ -45,7 +45,6 @@ export interface ApiFixture {
 // Helper function to make API requests to our Next.js API routes
 async function makeApiRequest(endpoint: string) {
   const url = `/api/football${endpoint}`;
-  console.log(`Making API request to: ${url}`);
 
   const response = await fetch(url);
 
@@ -54,7 +53,6 @@ async function makeApiRequest(endpoint: string) {
   }
 
   const data = await response.json();
-  console.log(`API response for ${endpoint}:`, data);
   
   return data;
 }
@@ -62,19 +60,12 @@ async function makeApiRequest(endpoint: string) {
 // Fetch Chelsea squad
 export async function fetchChelseaSquad(): Promise<ApiPlayer[]> {
   try {
-    console.log('Fetching Chelsea squad from football-data.org...');
     const data = await makeApiRequest('/squad');
     
     if (data.squad && data.squad.length > 0) {
-      console.log(`Found ${data.squad.length} players in Chelsea squad`);
-      // Log the first player structure for debugging
-      if (data.squad[0]) {
-        console.log('First player structure:', JSON.stringify(data.squad[0], null, 2));
-      }
       return data.squad;
     }
     
-    console.log('No players found in Chelsea squad');
     return [];
   } catch (error) {
     console.error('Error fetching Chelsea squad:', error);
@@ -85,19 +76,12 @@ export async function fetchChelseaSquad(): Promise<ApiPlayer[]> {
 // Fetch Chelsea fixtures
 export async function fetchChelseaFixtures(): Promise<ApiFixture[]> {
   try {
-    console.log('Fetching Chelsea fixtures from football-data.org...');
     const data = await makeApiRequest('/fixtures');
     
     if (data.matches && data.matches.length > 0) {
-      console.log(`Found ${data.matches.length} fixtures for Chelsea`);
-      // Log the first fixture structure for debugging
-      if (data.matches[0]) {
-        console.log('First fixture structure:', JSON.stringify(data.matches[0], null, 2));
-      }
       return data.matches;
     }
     
-    console.log('No fixtures found for Chelsea');
     return [];
   } catch (error) {
     console.error('Error fetching Chelsea fixtures:', error);

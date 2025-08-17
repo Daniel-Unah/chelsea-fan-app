@@ -61,8 +61,6 @@ export default function CreatePoll({ onPollCreated }: CreatePollProps) {
       setLoading(true);
       setError(null);
 
-      console.log('Submitting poll with user:', user.id);
-
       await createPoll({
         title: title.trim(),
         description: description.trim(),

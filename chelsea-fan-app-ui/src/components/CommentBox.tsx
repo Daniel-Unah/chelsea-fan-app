@@ -19,9 +19,7 @@ export default function CommentBox({ target, targetId }: CommentBoxProps) {
     try {
       setLoading(true);
       setError(null);
-      console.log('loadComments called with:', { target, targetId });
       const data = await fetchComments(target, targetId);
-      console.log('loadComments received data:', data);
       setComments(data);
     } catch (e) {
       console.error('Error loading comments:', e);
@@ -32,7 +30,6 @@ export default function CommentBox({ target, targetId }: CommentBoxProps) {
   }, [target, targetId]);
 
   useEffect(() => {
-    console.log('useEffect triggered, calling loadComments');
     loadComments();
   }, [loadComments]);
 
@@ -42,12 +39,8 @@ export default function CommentBox({ target, targetId }: CommentBoxProps) {
 
     try {
       setError(null);
-      console.log('Adding comment:', { content: newComment, target, targetId });
       const comment = await addComment(newComment, target, targetId);
-      console.log('Comment added successfully:', comment);
-      console.log('Current comments before update:', comments);
       setComments([comment, ...comments]);
-      console.log('Comments state updated');
       setNewComment('');
     } catch (e) {
       console.error('Error adding comment:', e);
