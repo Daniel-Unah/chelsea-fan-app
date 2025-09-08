@@ -82,6 +82,30 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
     }
   };
 
+  const getMatchResult = (score?: string) => {
+    if (!score) return null;
+    
+    // Score is always formatted as "chelseaGoals-opponentGoals"
+    const [chelseaScore, opponentScore] = score.split('-').map(Number);
+    
+    if (chelseaScore > opponentScore) return 'W';
+    if (chelseaScore < opponentScore) return 'L';
+    return 'D';
+  };
+
+  const getResultColor = (result: string) => {
+    switch (result) {
+      case 'W':
+        return 'bg-green-500 text-white';
+      case 'L':
+        return 'bg-red-500 text-white';
+      case 'D':
+        return 'bg-gray-500 text-white';
+      default:
+        return 'bg-gray-300 text-gray-700';
+    }
+  };
+
   return (
     <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 hover:shadow-lg transition-shadow ${
       isNextFixture ? 'border-2 border-blue-500' : ''
@@ -144,7 +168,17 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
         <div className="flex-1 w-full sm:w-auto text-center sm:text-right">
           {fixture.score ? (
             <div className="text-center sm:text-right">
-              <p className="text-lg sm:text-xl font-bold">{fixture.score}</p>
+              <div className="flex items-center justify-center sm:justify-end gap-2">
+                <p className="text-lg sm:text-xl font-bold">{fixture.score}</p>
+                {(() => {
+                  const result = getMatchResult(fixture.score);
+                  return result ? (
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${getResultColor(result)}`}>
+                      {result}
+                    </span>
+                  ) : null;
+                })()}
+              </div>
               <p className={`text-xs sm:text-sm ${getStatusColor(fixture.status)}`}>
                 {getStatusText(fixture.status, true)}
               </p>

@@ -3,9 +3,9 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
-        <div className="text-center mb-8 sm:mb-16">
+    <main className="h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="text-center mb-8 sm:mb-12">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white lg:text-5xl mb-4">
             Welcome to Chelsea Fan App
           </h1>
