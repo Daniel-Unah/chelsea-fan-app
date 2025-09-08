@@ -20,7 +20,7 @@ export default function FixturesPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-4 sm:py-8 px-4 sm:px-6">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Chelsea PL Fixtures</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Chelsea Fixtures</h1>
       
       {loading && <p>Loading fixtures...</p>}
       {error && <p className="text-red-500 mb-4">Error: {error}</p>}

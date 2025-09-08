@@ -107,10 +107,11 @@ export async function transformPlayer(apiPlayer: ApiPlayer) {
     age: age,
     height: 'Unknown',
     weight: 'Unknown',
-    goals: 0,
-    assists: 0,
-    appearances: 0,
-    rating: '0',
+    // Don't include statistics since API doesn't provide accurate data
+    goals: undefined,
+    assists: undefined,
+    appearances: undefined,
+    rating: undefined,
     created_at: new Date().toISOString(),
   };
 }

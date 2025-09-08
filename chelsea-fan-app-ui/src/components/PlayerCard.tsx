@@ -25,8 +25,8 @@ export default function PlayerCard({ player }: PlayerCardProps) {
           </p>
         </div>
         
-        {/* Player stats - Consistent grid layout */}
-        <div className="grid grid-cols-2 gap-3 text-sm flex-1">
+        {/* Player info - Basic details only */}
+        <div className="grid grid-cols-1 gap-3 text-sm flex-1">
           {player.age && (
             <div className="flex justify-between items-center py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded min-h-[2.5rem]">
               <span className="text-gray-600 dark:text-gray-400 font-medium">Age</span>
@@ -37,24 +37,6 @@ export default function PlayerCard({ player }: PlayerCardProps) {
             <div className="flex justify-between items-center py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded min-h-[2.5rem]">
               <span className="text-gray-600 dark:text-gray-400 font-medium">Height</span>
               <span className="font-bold text-gray-900 dark:text-white">{player.height}</span>
-            </div>
-          )}
-          {player.goals !== undefined && (
-            <div className="flex justify-between items-center py-2 px-3 bg-green-50 dark:bg-green-900/20 rounded min-h-[2.5rem]">
-              <span className="text-green-700 dark:text-green-400 font-medium">Goals</span>
-              <span className="font-bold text-green-700 dark:text-green-400">{player.goals}</span>
-            </div>
-          )}
-                    {player.assists !== undefined && (
-            <div className="flex justify-between items-center py-2 px-3 bg-blue-50 dark:bg-blue-900/20 rounded min-h-[2.5rem]">
-              <span className="text-blue-700 dark:text-blue-400 font-medium">Asts</span>
-              <span className="font-bold text-blue-700 dark:text-blue-400">{player.assists}</span>
-            </div>
-          )}
-          {player.appearances !== undefined && (
-            <div className="flex justify-between items-center py-2 px-3 bg-purple-50 dark:bg-purple-900/20 rounded min-h-[2.5rem]">
-              <span className="text-purple-700 dark:text-purple-400 font-medium">Apps</span>
-              <span className="font-bold text-purple-700 dark:text-purple-400">{player.appearances}</span>
             </div>
           )}
         </div>
