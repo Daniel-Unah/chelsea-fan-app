@@ -40,3 +40,14 @@ export async function fetchFixtures(): Promise<Fixture[]> {
     return [];
   }
 }
+
+const SETTLED = new Set(['FINISHED', 'AWARDED', 'FT', 'CANCELLED', 'CANC', 'POSTPONED', 'PST']);
+const LIVE = new Set(['IN_PLAY', 'PAUSED', 'EXTRA_TIME', 'PENALTY_SHOOTOUT', '1H', '2H', 'HT', 'PEN', 'AET']);
+
+export function findNextFixture(fixtures: Fixture[]): Fixture | undefined {
+  return fixtures.find((fixture) => {
+    if (SETTLED.has(fixture.status || '')) return false;
+    if (LIVE.has(fixture.status || '')) return true;
+    return new Date(fixture.date).getTime() >= Date.now();
+  });
+}

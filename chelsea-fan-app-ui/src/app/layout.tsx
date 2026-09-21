@@ -39,17 +39,22 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100 dark:bg-black min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col text-gray-900 dark:text-gray-100`}
       >
         <AuthProvider>
           <Navbar />
-          <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <main className="flex-1 w-full">
             {children}
           </main>
-          <footer className="w-full bg-blue-900 text-white text-center py-4 mt-8 px-4">
-            <p className="text-sm">
-              &copy; {new Date().getFullYear()} Chelsea Fan App. Not affiliated with Chelsea FC.
-            </p>
+          <footer className="mt-16 border-t border-blue-800/40 bg-blue-900 text-white">
+            <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-8 sm:flex-row sm:px-6">
+              <p className="text-sm text-blue-100">
+                &copy; {new Date().getFullYear()} Chelsea Fan App
+              </p>
+              <p className="text-xs text-blue-200/80">
+                Independent fan project. Not affiliated with Chelsea FC.
+              </p>
+            </div>
           </footer>
         </AuthProvider>
       </body>

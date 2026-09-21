@@ -47,9 +47,9 @@ export default function ForumList({ onSelectForum }: ForumListProps) {
         <div
           key={forum.id}
           onClick={() => onSelectForum(forum.id)}
-          className="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer overflow-hidden border border-gray-200 dark:border-gray-700"
+          className="group cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-gray-50 transition hover:border-blue-200 hover:bg-white dark:border-gray-800 dark:bg-gray-800/50 dark:hover:border-blue-800"
         >
-          <div className="p-6">
+          <div className="p-5">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                 {forum.name}

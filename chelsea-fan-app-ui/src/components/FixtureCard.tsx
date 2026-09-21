@@ -20,32 +20,31 @@ function isLive(status?: string) {
 export default function FixtureCard({ fixture, isNextFixture = false }: FixtureCardProps) {
   const matchDate = new Date(fixture.date);
   const formattedDate = matchDate.toLocaleDateString('en-GB', {
-    weekday: 'long',
+    weekday: 'short',
     day: 'numeric',
-    month: 'long',
-    year: 'numeric',
+    month: 'short',
   });
   const finished = isFinished(fixture.status);
   const live = isLive(fixture.status);
 
-  const getStatusColor = (status?: string) => {
-    if (isFinished(status)) return 'text-green-600';
-    if (isLive(status)) return 'text-orange-600';
+  const getStatusStyle = (status?: string) => {
+    if (isFinished(status)) return 'bg-green-50 text-green-700 dark:bg-green-950/40 dark:text-green-300';
+    if (isLive(status)) return 'bg-orange-50 text-orange-700 dark:bg-orange-950/40 dark:text-orange-300';
 
     switch (status) {
       case 'TIMED':
       case 'SCHEDULED':
       case 'NS':
-        return 'text-blue-600';
+        return 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300';
       case 'POSTPONED':
       case 'CANCELLED':
       case 'SUSPENDED':
       case 'PST':
       case 'CANC':
       case 'SUSP':
-        return 'text-red-600';
+        return 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300';
       default:
-        return 'text-gray-600 dark:text-gray-300';
+        return 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300';
     }
   };
 
@@ -99,9 +98,9 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
   const getResultColor = (result: string) => {
     switch (result) {
       case 'W':
-        return 'bg-green-500 text-white';
+        return 'bg-green-600 text-white';
       case 'L':
-        return 'bg-red-500 text-white';
+        return 'bg-red-600 text-white';
       case 'D':
         return 'bg-gray-500 text-white';
       default:
@@ -112,90 +111,83 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
   const result = finished ? getMatchResult(fixture.score) : null;
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 hover:shadow-lg transition-shadow ${
-      isNextFixture ? 'border-2 border-blue-500' : ''
+    <div className={`rounded-2xl border bg-white p-4 shadow-sm transition dark:bg-gray-900 sm:p-5 ${
+      isNextFixture
+        ? 'border-blue-500 ring-2 ring-blue-500/20'
+        : 'border-gray-200/80 dark:border-gray-800'
     }`}>
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
-        <div className="flex-1 w-full sm:w-auto text-center sm:text-left">
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">{fixture.competition}</p>
-          <p className="font-semibold text-sm sm:text-base">{formattedDate}</p>
-        </div>
-        <div className="flex-1 text-center">
-          <div className="grid grid-cols-3 items-center gap-1 sm:gap-2">
-            <div className="flex flex-col items-center">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 relative">
-                <Image
-                  src="/chelsea-logo.png"
-                  alt="Chelsea FC"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <span className="text-xs text-gray-600 dark:text-gray-300 mt-1 text-center">Chelsea</span>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <span className="text-gray-500 font-semibold text-xs sm:text-sm">vs</span>
-              {fixture.score && (
-                <span className="text-base sm:text-lg font-bold">{fixture.score}</span>
-              )}
-            </div>
-
-            <div className="flex flex-col items-center">
-              {fixture.opponent_logo ? (
-                <div className="w-6 h-6 sm:w-8 sm:h-8 relative">
-                  <Image
-                    src={fixture.opponent_logo}
-                    alt={fixture.opponent}
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-              ) : (
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                  <span className="text-gray-600 text-xs font-bold">
-                    {fixture.opponent.split(' ').map(word => word[0]).join('')}
-                  </span>
-                </div>
-              )}
-              <span className="text-xs text-gray-600 dark:text-gray-300 mt-1 text-center break-words">
-                {fixture.opponent}
-              </span>
-            </div>
-          </div>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-2">
-            {fixture.home_or_away === 'home' ? 'at Stamford Bridge' : 'Away'}
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            {fixture.competition}
           </p>
+          <p className="text-sm font-semibold text-gray-900 dark:text-white">{formattedDate}</p>
         </div>
-        <div className="flex-1 w-full sm:w-auto text-center sm:text-right">
-          {finished && result ? (
-            <div className="flex items-center justify-center sm:justify-end gap-2 mb-1">
-              <span className={`px-2 py-1 rounded-full text-xs font-bold ${getResultColor(result)}`}>
-                {result}
-              </span>
+        <div className="flex items-center gap-2">
+          {isNextFixture && (
+            <span className="rounded-full bg-blue-600 px-2.5 py-1 text-xs font-semibold text-white">
+              Next match
+            </span>
+          )}
+          <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${getStatusStyle(fixture.status)}`}>
+            {getStatusText(fixture.status)}
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+        <div className="flex items-center justify-end gap-2">
+          <span className="hidden text-right text-sm font-semibold text-gray-900 dark:text-white sm:block">Chelsea</span>
+          <div className="relative h-9 w-9 sm:h-10 sm:w-10">
+            <Image src="/chelsea-logo.png" alt="Chelsea FC" fill className="object-contain" />
+          </div>
+        </div>
+
+        <div className="min-w-16 text-center">
+          {fixture.score ? (
+            <span className="text-2xl font-bold tabular-nums text-gray-900 dark:text-white">{fixture.score}</span>
+          ) : (
+            <span className="text-sm font-semibold text-gray-400">vs</span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          {fixture.opponent_logo ? (
+            <div className="relative h-9 w-9 sm:h-10 sm:w-10">
+              <Image src={fixture.opponent_logo} alt={fixture.opponent} fill className="object-contain" />
             </div>
-          ) : !finished && !live ? (
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+          ) : (
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-600 dark:bg-gray-800 sm:h-10 sm:w-10">
+              {fixture.opponent.split(' ').map(word => word[0]).join('')}
+            </div>
+          )}
+          <span className="hidden text-sm font-semibold text-gray-900 dark:text-white sm:block">{fixture.opponent}</span>
+        </div>
+      </div>
+
+      <p className="mt-2 text-center text-xs font-medium text-gray-500 sm:hidden">{fixture.opponent}</p>
+
+      <div className="mt-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 sm:text-sm">
+        <span>{fixture.home_or_away === 'home' ? 'Stamford Bridge' : 'Away'}</span>
+        <div className="flex items-center gap-2">
+          {finished && result && (
+            <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${getResultColor(result)}`}>
+              {result}
+            </span>
+          )}
+          {!finished && !live && (
+            <span>
               {matchDate.toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: true,
-                timeZone: 'UTC'
-              })}
-            </p>
-          ) : null}
-          <p className={`text-xs sm:text-sm ${getStatusColor(fixture.status)}`}>
-            {getStatusText(fixture.status)}
-          </p>
+                timeZone: 'UTC',
+              })}{' '}
+              UTC
+            </span>
+          )}
         </div>
       </div>
-      {isNextFixture && (
-        <div className="mt-3 text-center">
-          <span className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
-            Next Match
-          </span>
-        </div>
-      )}
     </div>
   );
 }

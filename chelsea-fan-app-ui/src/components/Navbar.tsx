@@ -1,48 +1,77 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
+
+const links = [
+  { href: "/news", label: "News" },
+  { href: "/fixtures", label: "Fixtures" },
+  { href: "/roster", label: "Roster" },
+  { href: "/community", label: "Community" },
+];
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isActive = (href: string) => pathname === href;
 
   return (
-    <nav className="w-full bg-blue-700 text-white px-4 sm:px-6 py-4 shadow">
-      <div className="flex items-center justify-between">
-        <Link href="/" className="font-bold text-lg sm:text-xl hover:underline">Chelsea Fan App</Link>
-        
-        {/* Mobile menu button */}
+    <nav className="sticky top-0 z-40 border-b border-blue-800/50 bg-blue-700/95 text-white shadow-lg shadow-blue-900/20 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+        <Link href="/" className="flex items-center gap-3 font-bold tracking-tight">
+          <Image
+            src="/chelsea-logo.png"
+            alt="Chelsea FC crest"
+            width={36}
+            height={36}
+            className="h-9 w-9 object-contain"
+            priority
+          />
+          <span className="text-base sm:text-lg">Chelsea Fan App</span>
+        </Link>
+
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="md:hidden p-2"
+          className="rounded-lg p-2 hover:bg-white/10 md:hidden"
+          aria-label="Toggle menu"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
 
-        {/* Desktop menu */}
-        <div className="hidden md:flex items-center gap-6">
-          <Link href="/news" className="hover:underline">News</Link>
-          <Link href="/fixtures" className="hover:underline">Fixtures</Link>
-          <Link href="/roster" className="hover:underline">Roster</Link>
-          <Link href="/community" className="hover:underline">Community</Link>
+        <div className="hidden items-center gap-1 md:flex">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
+                isActive(link.href)
+                  ? "bg-white text-blue-700"
+                  : "text-blue-50 hover:bg-white/10"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
 
-        {/* Desktop auth button */}
         <div className="hidden md:block">
           {user ? (
             <button
               onClick={logout}
-              className="bg-white text-blue-700 px-4 py-2 rounded hover:bg-gray-200 transition font-semibold"
+              className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
             >
               Logout
             </button>
           ) : (
             <Link
               href="/login"
-              className="bg-white text-blue-700 px-4 py-2 rounded hover:bg-gray-200 transition font-semibold"
+              className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
             >
               Login
             </Link>
@@ -50,25 +79,36 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden mt-4 pb-4 border-t border-blue-600">
-          <div className="flex flex-col space-y-3 pt-4">
-            <Link href="/news" className="hover:underline">News</Link>
-            <Link href="/fixtures" className="hover:underline">Fixtures</Link>
-            <Link href="/roster" className="hover:underline">Roster</Link>
-            <Link href="/community" className="hover:underline">Community</Link>
+        <div className="border-t border-blue-600 px-4 pb-4 md:hidden">
+          <div className="mx-auto flex max-w-6xl flex-col gap-1 pt-3">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsMenuOpen(false)}
+                className={`rounded-lg px-3 py-2 text-sm font-medium ${
+                  isActive(link.href) ? "bg-white text-blue-700" : "hover:bg-white/10"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
             {user ? (
               <button
-                onClick={logout}
-                className="bg-white text-blue-700 px-4 py-2 rounded hover:bg-gray-200 transition font-semibold text-left"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  logout();
+                }}
+                className="mt-2 rounded-lg bg-white px-3 py-2 text-left text-sm font-semibold text-blue-700"
               >
                 Logout
               </button>
             ) : (
               <Link
                 href="/login"
-                className="bg-white text-blue-700 px-4 py-2 rounded hover:bg-gray-200 transition font-semibold text-center"
+                onClick={() => setIsMenuOpen(false)}
+                className="mt-2 rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-blue-700"
               >
                 Login
               </Link>
@@ -78,4 +118,4 @@ export default function Navbar() {
       )}
     </nav>
   );
-} 
+}

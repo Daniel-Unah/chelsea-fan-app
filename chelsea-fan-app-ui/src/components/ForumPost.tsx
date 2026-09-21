@@ -132,9 +132,9 @@ export default function ForumPost({ forumId }: ForumPostProps) {
     <div className="space-y-6">
       {/* Create new post form */}
       {user && (
-        <form onSubmit={handleCreatePost} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Create New Post</h3>
+        <form onSubmit={handleCreatePost} className="overflow-hidden rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/60">
+          <div className="p-5">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Create new post</h3>
             <div className="space-y-4">
               <div>
                 <input
@@ -157,7 +157,7 @@ export default function ForumPost({ forumId }: ForumPostProps) {
               </div>
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                className="w-full rounded-full bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700"
               >
                 Create Post
               </button>
@@ -169,7 +169,7 @@ export default function ForumPost({ forumId }: ForumPostProps) {
       {/* Posts list with comments */}
       <div className="space-y-6">
         {posts.map((post) => (
-          <div key={post.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div key={post.id} className="overflow-hidden rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/60">
             {/* Post content */}
             <div className="p-6">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{post.title}</h3>
