@@ -74,7 +74,7 @@ function SignupForm() {
       >
         <div className="mb-6 flex flex-col items-center text-center">
           <Image src="/chelsea-logo.png" alt="" width={48} height={48} className="mb-3 h-12 w-12 object-contain" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Create an account</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Create an Account</h2>
         </div>
         <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
         <div className="mb-4 flex items-center rounded-xl border border-gray-300 bg-white ring-blue-600 focus-within:ring-2 dark:border-gray-700 dark:bg-gray-800">
