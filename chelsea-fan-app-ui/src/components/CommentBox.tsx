@@ -106,7 +106,9 @@ export default function CommentBox({ target, targetId }: CommentBoxProps) {
             <div key={comment.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
               <div className="flex justify-between items-start mb-2">
                 <div>
-                  <p className="font-semibold">{comment.user?.email}</p>
+                  {comment.user?.email && (
+                    <p className="font-semibold">{comment.user.email}</p>
+                  )}
                   <p className="text-sm text-gray-500">
                     {formatDate(comment.created_at)}
                   </p>

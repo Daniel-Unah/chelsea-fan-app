@@ -15,8 +15,13 @@ export default function FixturesPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Find the next fixture (first fixture without a score)
-  const nextFixture = fixtures.find(fixture => !fixture.score);
+  const settled = new Set(['FINISHED', 'AWARDED', 'FT', 'CANCELLED', 'CANC', 'POSTPONED', 'PST']);
+  const live = new Set(['IN_PLAY', 'PAUSED', 'EXTRA_TIME', 'PENALTY_SHOOTOUT', '1H', '2H', 'HT', 'PEN', 'AET']);
+  const nextFixture = fixtures.find((fixture) => {
+    if (settled.has(fixture.status || '')) return false;
+    if (live.has(fixture.status || '')) return true;
+    return new Date(fixture.date).getTime() >= Date.now();
+  });
 
   return (
     <div className="max-w-4xl mx-auto py-4 sm:py-8 px-4 sm:px-6">

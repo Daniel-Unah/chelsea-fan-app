@@ -95,7 +95,15 @@ export async function transformPlayer(apiPlayer: ApiPlayer) {
   // Use Chelsea logo as fallback for all players
   const safePhotoUrl = '/chelsea-logo.png';
 
-  const age = new Date().getFullYear() - new Date(apiPlayer.dateOfBirth).getFullYear();
+  const birthDate = new Date(apiPlayer.dateOfBirth);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const birthdayPassed =
+    today.getMonth() > birthDate.getMonth() ||
+    (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+  if (!birthdayPassed) {
+    age -= 1;
+  }
 
   return {
     id: apiPlayer.id,

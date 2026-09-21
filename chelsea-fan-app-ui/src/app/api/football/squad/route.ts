@@ -4,6 +4,8 @@ const API_URL = 'https://api.football-data.org/v4';
 const API_KEY = process.env.FOOTBALL_DATA_API_KEY;
 const CHELSEA_TEAM_ID = 61;
 
+export const revalidate = 3600;
+
 export async function GET() {
   try {
     if (!API_KEY) {

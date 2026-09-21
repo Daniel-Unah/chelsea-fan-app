@@ -27,16 +27,13 @@ export async function fetchComments(target: string, targetId: number) {
       throw new Error(commentsError.message);
     }
 
-    // Get the current user's email
     const { data: { user } } = await supabase.auth.getUser();
-    const currentUserEmail = user?.email;
 
-    // Map the comments with user data
     const commentsWithUsers = (comments || []).map(comment => ({
       ...comment,
-      user: {
-        email: comment.user_id === user?.id ? currentUserEmail : 'Anonymous User'
-      }
+      user: comment.user_id === user?.id && user?.email
+        ? { email: user.email }
+        : undefined
     }));
 
     return commentsWithUsers as Comment[];

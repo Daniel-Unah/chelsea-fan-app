@@ -175,8 +175,6 @@ export default function ForumPost({ forumId }: ForumPostProps) {
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{post.title}</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-4">{post.content}</p>
               <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                <span className="font-medium text-gray-700 dark:text-gray-300">User</span>
-                <span className="mx-2">•</span>
                 <span>{formatDate(post.created_at)}</span>
               </div>
             </div>
@@ -237,8 +235,6 @@ export default function ForumPost({ forumId }: ForumPostProps) {
                         <div key={comment.id} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                           <p className="text-gray-700 dark:text-gray-300 mb-2">{comment.content}</p>
                           <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                            <span className="font-medium text-gray-700 dark:text-gray-300">User</span>
-                            <span className="mx-2">•</span>
                             <span>{formatDate(comment.created_at)}</span>
                           </div>
                         </div>

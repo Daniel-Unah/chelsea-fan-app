@@ -80,7 +80,7 @@ export default function PollList() {
                 <div key={option.id} className="relative">
                   <button
                     onClick={() => handleVote(poll.id, option.id)}
-                    disabled={hasVoted}
+                    disabled={!user}
                     className={`w-full p-3 text-left rounded-md transition-colors ${
                       hasVoted
                         ? 'bg-blue-600 border-2 border-blue-400'

@@ -35,10 +35,13 @@ export async function fetchPolls(): Promise<Poll[]> {
 
     if (error) throw error;
 
-    // Get current user's votes
-    const { data: userVotes } = await supabase
+    const { data: { user } } = await supabase.auth.getUser();
+    const userVotesQuery = supabase
       .from('poll_votes')
       .select('poll_id, option_id');
+    const { data: userVotes } = user
+      ? await userVotesQuery.eq('user_id', user.id)
+      : { data: [] };
 
     // Get options and vote counts for each poll
     const pollsWithOptions = await Promise.all(

@@ -6,6 +6,17 @@ interface FixtureCardProps {
   isNextFixture?: boolean;
 }
 
+const FINISHED_STATUSES = new Set(['FINISHED', 'AWARDED', 'FT']);
+const LIVE_STATUSES = new Set(['IN_PLAY', 'PAUSED', 'EXTRA_TIME', 'PENALTY_SHOOTOUT', '1H', '2H', 'HT', 'PEN', 'AET']);
+
+function isFinished(status?: string) {
+  return FINISHED_STATUSES.has(status || '');
+}
+
+function isLive(status?: string) {
+  return LIVE_STATUSES.has(status || '');
+}
+
 export default function FixtureCard({ fixture, isNextFixture = false }: FixtureCardProps) {
   const matchDate = new Date(fixture.date);
   const formattedDate = matchDate.toLocaleDateString('en-GB', {
@@ -14,69 +25,62 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
     month: 'long',
     year: 'numeric',
   });
+  const finished = isFinished(fixture.status);
+  const live = isLive(fixture.status);
 
   const getStatusColor = (status?: string) => {
+    if (isFinished(status)) return 'text-green-600';
+    if (isLive(status)) return 'text-orange-600';
+
     switch (status) {
-      case 'FT':
-        return 'text-green-600';
+      case 'TIMED':
+      case 'SCHEDULED':
       case 'NS':
         return 'text-blue-600';
-      case '1H':
-      case '2H':
-      case 'HT':
-        return 'text-orange-600';
-      case 'PEN':
-      case 'AET':
-        return 'text-purple-600';
+      case 'POSTPONED':
+      case 'CANCELLED':
+      case 'SUSPENDED':
       case 'PST':
       case 'CANC':
       case 'SUSP':
-      case 'INT':
-      case 'ABD':
-      case 'AWD':
-      case 'WO':
         return 'text-red-600';
       default:
         return 'text-gray-600 dark:text-gray-300';
     }
   };
 
-  const getStatusText = (status?: string, hasScore?: boolean) => {
-    // If there's a score, the game is completed
-    if (hasScore) {
-      return 'Final';
-    }
-    
-    // Otherwise, use the API status
+  const getStatusText = (status?: string) => {
     switch (status) {
+      case 'FINISHED':
       case 'FT':
+      case 'AWARDED':
         return 'Final';
-      case 'NS':
-        return 'Not Started';
+      case 'IN_PLAY':
       case '1H':
-        return 'First Half';
       case '2H':
-        return 'Second Half';
+        return 'Live';
+      case 'PAUSED':
       case 'HT':
-        return 'Half Time';
-      case 'PEN':
-        return 'Penalties';
+        return 'Paused';
+      case 'EXTRA_TIME':
       case 'AET':
         return 'Extra Time';
+      case 'PENALTY_SHOOTOUT':
+      case 'PEN':
+        return 'Penalties';
+      case 'TIMED':
+      case 'SCHEDULED':
+      case 'NS':
+        return 'Scheduled';
+      case 'POSTPONED':
       case 'PST':
         return 'Postponed';
+      case 'CANCELLED':
       case 'CANC':
         return 'Cancelled';
+      case 'SUSPENDED':
       case 'SUSP':
         return 'Suspended';
-      case 'INT':
-        return 'Interrupted';
-      case 'ABD':
-        return 'Abandoned';
-      case 'AWD':
-        return 'Technical Loss';
-      case 'WO':
-        return 'Walkover';
       default:
         return 'Scheduled';
     }
@@ -84,10 +88,9 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
 
   const getMatchResult = (score?: string) => {
     if (!score) return null;
-    
-    // Score is always formatted as "chelseaGoals-opponentGoals"
+
     const [chelseaScore, opponentScore] = score.split('-').map(Number);
-    
+
     if (chelseaScore > opponentScore) return 'W';
     if (chelseaScore < opponentScore) return 'L';
     return 'D';
@@ -106,6 +109,8 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
     }
   };
 
+  const result = finished ? getMatchResult(fixture.score) : null;
+
   return (
     <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 hover:shadow-lg transition-shadow ${
       isNextFixture ? 'border-2 border-blue-500' : ''
@@ -117,7 +122,6 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
         </div>
         <div className="flex-1 text-center">
           <div className="grid grid-cols-3 items-center gap-1 sm:gap-2">
-            {/* Chelsea - Fixed width column */}
             <div className="flex flex-col items-center">
               <div className="w-6 h-6 sm:w-8 sm:h-8 relative">
                 <Image
@@ -129,16 +133,14 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
               </div>
               <span className="text-xs text-gray-600 dark:text-gray-300 mt-1 text-center">Chelsea</span>
             </div>
-            
-            {/* VS and Score - Fixed width column */}
+
             <div className="flex flex-col items-center">
               <span className="text-gray-500 font-semibold text-xs sm:text-sm">vs</span>
               {fixture.score && (
                 <span className="text-base sm:text-lg font-bold">{fixture.score}</span>
               )}
             </div>
-            
-            {/* Opponent - Fixed width column */}
+
             <div className="flex flex-col items-center">
               {fixture.opponent_logo ? (
                 <div className="w-6 h-6 sm:w-8 sm:h-8 relative">
@@ -166,38 +168,25 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
           </p>
         </div>
         <div className="flex-1 w-full sm:w-auto text-center sm:text-right">
-          {fixture.score ? (
-            <div className="text-center sm:text-right">
-              <div className="flex items-center justify-center sm:justify-end gap-2">
-                <p className="text-lg sm:text-xl font-bold">{fixture.score}</p>
-                {(() => {
-                  const result = getMatchResult(fixture.score);
-                  return result ? (
-                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${getResultColor(result)}`}>
-                      {result}
-                    </span>
-                  ) : null;
-                })()}
-              </div>
-              <p className={`text-xs sm:text-sm ${getStatusColor(fixture.status)}`}>
-                {getStatusText(fixture.status, true)}
-              </p>
+          {finished && result ? (
+            <div className="flex items-center justify-center sm:justify-end gap-2 mb-1">
+              <span className={`px-2 py-1 rounded-full text-xs font-bold ${getResultColor(result)}`}>
+                {result}
+              </span>
             </div>
-          ) : (
-            <div className="text-center sm:text-right">
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
-                {matchDate.toLocaleTimeString('en-US', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: true,
-                  timeZone: 'UTC'
-                })}
-              </p>
-              <p className={`text-xs sm:text-sm ${getStatusColor(fixture.status)}`}>
-                {getStatusText(fixture.status, false)}
-              </p>
-            </div>
-          )}
+          ) : !finished && !live ? (
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+              {matchDate.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+                timeZone: 'UTC'
+              })}
+            </p>
+          ) : null}
+          <p className={`text-xs sm:text-sm ${getStatusColor(fixture.status)}`}>
+            {getStatusText(fixture.status)}
+          </p>
         </div>
       </div>
       {isNextFixture && (
@@ -209,4 +198,4 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
       )}
     </div>
   );
-} 
+}

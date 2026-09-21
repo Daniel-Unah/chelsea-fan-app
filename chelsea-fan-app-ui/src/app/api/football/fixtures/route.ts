@@ -21,15 +21,21 @@ interface ApiResponse {
   matches?: Match[];
 }
 
+export const revalidate = 300;
+
+function currentFootballSeason(now = new Date()) {
+  // European club seasons start in August (month 7).
+  return now.getUTCMonth() >= 7 ? now.getUTCFullYear() : now.getUTCFullYear() - 1;
+}
+
 export async function GET() {
   try {
     if (!API_KEY) {
       return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
     }
 
-    // Try to fetch fixtures from multiple competitions
-    // First, let's try to get all matches without any competition filter
-    const response = await fetch(`${API_URL}/teams/${CHELSEA_TEAM_ID}/matches?season=2025&limit=200`, {
+    const season = currentFootballSeason();
+    const response = await fetch(`${API_URL}/teams/${CHELSEA_TEAM_ID}/matches?season=${season}&limit=200`, {
       headers: {
         'X-Auth-Token': API_KEY,
       },
