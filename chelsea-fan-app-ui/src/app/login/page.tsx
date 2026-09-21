@@ -1,16 +1,22 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import Image from "next/image";
 
-export default function LoginPage() {
+function safeNext(value: string | null) {
+  return value && value.startsWith("/") && !value.startsWith("//") ? value : "/";
+}
+
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = safeNext(searchParams.get("next"));
   const { user, login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,15 +28,15 @@ export default function LoginPage() {
     if (result && result.error) {
       setError(result.error.message || "Login failed");
     } else {
-      router.push("/");
+      router.push(next);
     }
   };
 
   useEffect(() => {
     if (user) {
-      router.push("/");
+      router.push(next);
     }
-  }, [user, router]);
+  }, [user, router, next]);
 
   if (user) {
     return null;
@@ -72,11 +78,19 @@ export default function LoginPage() {
         </button>
         <p className="mt-5 text-center text-sm text-gray-600 dark:text-gray-400">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="font-semibold text-blue-700 hover:text-blue-800 dark:text-blue-400">
+          <Link href={`/signup?next=${encodeURIComponent(next)}`} className="font-semibold text-blue-700 hover:text-blue-800 dark:text-blue-400">
             Sign up
           </Link>
         </p>
       </form>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

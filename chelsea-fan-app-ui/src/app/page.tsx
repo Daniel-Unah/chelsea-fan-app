@@ -65,7 +65,7 @@ export default function Home() {
             </h1>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/fixtures"
+                href={nextFixture ? `/fixtures/${nextFixture.id}` : '/fixtures'}
                 className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
               >
                 Next match
@@ -81,7 +81,7 @@ export default function Home() {
 
           {nextFixture && (
             <Link
-              href="/fixtures"
+              href={`/fixtures/${nextFixture.id}`}
               className="w-full max-w-sm rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm transition hover:bg-white/15"
             >
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-100">Next up</p>

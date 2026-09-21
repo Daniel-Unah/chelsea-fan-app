@@ -1,5 +1,6 @@
 import { Fixture } from '@/services/fetchFixtures';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface FixtureCardProps {
   fixture: Fixture;
@@ -111,7 +112,9 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
   const result = finished ? getMatchResult(fixture.score) : null;
 
   return (
-    <div className={`rounded-2xl border bg-white p-4 shadow-sm transition dark:bg-gray-900 sm:p-5 ${
+    <Link
+      href={`/fixtures/${fixture.id}`}
+      className={`block rounded-2xl border bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-gray-900 sm:p-5 ${
       isNextFixture
         ? 'border-blue-500 ring-2 ring-blue-500/20'
         : 'border-gray-200/80 dark:border-gray-800'
@@ -188,6 +191,6 @@ export default function FixtureCard({ fixture, isNextFixture = false }: FixtureC
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

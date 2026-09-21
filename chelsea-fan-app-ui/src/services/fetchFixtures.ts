@@ -44,6 +44,19 @@ export async function fetchFixtures(): Promise<Fixture[]> {
 const SETTLED = new Set(['FINISHED', 'AWARDED', 'FT', 'CANCELLED', 'CANC', 'POSTPONED', 'PST']);
 const LIVE = new Set(['IN_PLAY', 'PAUSED', 'EXTRA_TIME', 'PENALTY_SHOOTOUT', '1H', '2H', 'HT', 'PEN', 'AET']);
 
+export async function fetchFixtureById(id: number): Promise<Fixture | undefined> {
+  const fixtures = await fetchFixtures();
+  return fixtures.find((fixture) => fixture.id === id);
+}
+
+export function isLiveFixture(status?: string) {
+  return LIVE.has(status || '');
+}
+
+export function isFinishedFixture(status?: string) {
+  return new Set(['FINISHED', 'AWARDED', 'FT']).has(status || '');
+}
+
 export function findNextFixture(fixtures: Fixture[]): Fixture | undefined {
   return fixtures.find((fixture) => {
     if (SETTLED.has(fixture.status || '')) return false;
