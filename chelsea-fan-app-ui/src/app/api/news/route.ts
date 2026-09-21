@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export const revalidate = 300;
 
 const CHELSEA_NEWS_QUERY =
-  '("Chelsea FC" OR "Chelsea Football Club" OR "Stamford Bridge" OR "Enzo Maresca" OR "Cole Palmer" OR "Enzo Fernandez") AND (football OR Premier League)';
+  '("Chelsea FC" OR "Chelsea Football Club" OR "Stamford Bridge") AND (football OR "Premier League")';
 
 export async function GET() {
   const apiKey = process.env.NEWS_API_KEY;

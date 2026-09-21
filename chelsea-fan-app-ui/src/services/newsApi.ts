@@ -36,9 +36,8 @@ export async function fetchChelseaNews(): Promise<NewsApiArticle[]> {
     if (data.status === 'ok' && data.articles) {
       // Filter articles to ensure they're actually about Chelsea
       const chelseaArticles = data.articles.filter(article => {
-        const content = `${article.title} ${article.description} ${article.content}`.toLowerCase();
-        const chelseaKeywords = ['chelsea', 'stamford bridge', 'maresca', 'cole palmer', 'enzo fernandez', 'caicedo', 'jackson', 'mudryk'];
-        return chelseaKeywords.some(keyword => content.includes(keyword));
+        const headline = `${article.title} ${article.description}`.toLowerCase();
+        return headline.includes('chelsea') || headline.includes('stamford bridge');
       });
       
       return chelseaArticles.slice(0, 20); // Return top 20 Chelsea-related articles
