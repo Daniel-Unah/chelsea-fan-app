@@ -51,65 +51,20 @@ export async function fetchChelseaNews(): Promise<NewsApiArticle[]> {
   }
 }
 
-// These two lists must stay in sync with images.remotePatterns in next.config.js.
-// next/image rejects any host that is not configured there, so trusting a host
-// here that the config does not allow produces a broken image rather than a photo.
-const TRUSTED_IMAGE_HOSTS = [
-  'images.unsplash.com',
-  'upload.wikimedia.org',
-  'icdn.chelsea.news',
-  'img.chelseafc.com',
-  'media.api-sports.io',
-  'photobooth-api.onefootball.com',
-  'imageio.forbes.com',
-  'phantom-marca.uecdn.es',
-];
-
-// Matched one subdomain level deep, mirroring the '*.example.com' patterns.
-const TRUSTED_PARENT_DOMAINS = [
-  'chelseafc.com',
-  'premierleague.com',
-  'football.london',
-  'theguardian.com',
-  'telegraph.co.uk',
-  'independent.co.uk',
-  'dailymail.co.uk',
-  'eveningstandard.co.uk',
-  'standard.co.uk',
-  'mirror.co.uk',
-  'metro.co.uk',
-  'forbes.com',
-  'bbc.com',
-  'sky.com',
-  'espn.com',
-  'goal.com',
-  'uefa.com',
-  'fifa.com',
-];
-
-function isTrustedNewsImageUrl(url: string): boolean {
-  if (!url) return false;
+function newsImageUrl(url?: string): string {
+  if (!url) return '/chelsea-logo.png';
 
   try {
-    const hostname = new URL(url).hostname;
-
-    if (TRUSTED_IMAGE_HOSTS.includes(hostname)) {
-      return true;
-    }
-
-    const parentDomain = hostname.split('.').slice(1).join('.');
-    return TRUSTED_PARENT_DOMAINS.includes(parentDomain);
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:' ? parsed.href : '/chelsea-logo.png';
   } catch {
-    return false;
+    return '/chelsea-logo.png';
   }
 }
 
 // Transform news API data to our app's format
 export function transformNewsArticle(article: NewsApiArticle) {
-  // Fall back to the Chelsea logo for images next/image is not configured to load
-  const safeImageUrl = isTrustedNewsImageUrl(article.urlToImage || '')
-    ? article.urlToImage
-    : '/chelsea-logo.png';
+  const safeImageUrl = newsImageUrl(article.urlToImage);
 
   // Generate stable ID based on article URL (hash) to ensure consistency
   // This way, the same article will always have the same ID
