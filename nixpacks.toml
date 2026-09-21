@@ -1,0 +1,13 @@
+[phases.setup]
+nixPkgs = ["nodejs_22"]
+
+[phases.install]
+dependsOn = ["setup"]
+cmds = ["npm ci --prefix chelsea-fan-app-ui"]
+
+[phases.build]
+dependsOn = ["install"]
+cmds = ["npm run build --prefix chelsea-fan-app-ui"]
+
+[start]
+cmd = "cd chelsea-fan-app-ui && npm run start"
