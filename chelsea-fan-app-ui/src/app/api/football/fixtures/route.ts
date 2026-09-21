@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 const API_URL = 'https://api.football-data.org/v4';
-const API_KEY = process.env.NEXT_PUBLIC_FOOTBALL_DATA_API_KEY;
+const API_KEY = process.env.FOOTBALL_DATA_API_KEY;
 const CHELSEA_TEAM_ID = 61;
 
 interface Match {

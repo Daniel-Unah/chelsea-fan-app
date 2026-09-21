@@ -437,17 +437,14 @@ const FALLBACK_FIXTURES: Fixture[] = [
 
 export async function fetchFixtures(): Promise<Fixture[]> {
   try {
-    // First try to get real data from Football API
-    if (process.env.NEXT_PUBLIC_FOOTBALL_DATA_API_KEY) {
-      try {
-        const apiFixtures = await fetchChelseaFixtures();
-        if (apiFixtures.length > 0) {
-          const transformedFixtures = await Promise.all(apiFixtures.map(fixture => transformFixture(fixture)));
-          return transformedFixtures;
-        }
-      } catch (apiError) {
-        console.error('Football API error, falling back to database:', apiError);
+    try {
+      const apiFixtures = await fetchChelseaFixtures();
+      if (apiFixtures.length > 0) {
+        const transformedFixtures = await Promise.all(apiFixtures.map(fixture => transformFixture(fixture)));
+        return transformedFixtures;
       }
+    } catch (apiError) {
+      console.error('Football API error, falling back to database:', apiError);
     }
 
     // Try to get data from Supabase

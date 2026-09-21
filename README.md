@@ -39,8 +39,8 @@ I built this app because I wanted a dedicated platform for Chelsea fans to get a
    ```
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   NEXT_PUBLIC_NEWS_API_KEY=your_news_api_key
-   NEXT_PUBLIC_FOOTBALL_DATA_API_KEY=your_football_api_key
+   NEWS_API_KEY=your_news_api_key
+   FOOTBALL_DATA_API_KEY=your_football_api_key
    ```
 
 4. Run the development server:

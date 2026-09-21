@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
@@ -8,31 +8,34 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, signup } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const { error } = await fetch("/api/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    }).then(res => res.json());
+    setNotice(null);
+    const { error, needsConfirmation } = await signup(email, password);
     setLoading(false);
     if (error) {
       setError(error.message || "Signup failed");
+    } else if (needsConfirmation) {
+      setNotice("Check your email to confirm your account, then log in.");
     } else {
       router.push("/");
     }
   };
 
-
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   if (user) {
-    router.push("/");
     return null;
   }
 
@@ -60,6 +63,7 @@ export default function SignupPage() {
           required
         />
         {error && <p className="text-red-500 mb-4">{error}</p>}
+        {notice && <p className="text-green-600 dark:text-green-400 mb-4">{notice}</p>}
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"

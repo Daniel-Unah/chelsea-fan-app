@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const query = url.searchParams.get('q') || '("Chelsea FC" OR "Chelsea Football Club" OR "Stamford Bridge" OR "Enzo Maresca" OR "Cole Palmer" OR "Enzo Fernandez") AND (football OR Premier League)';
-  const apiKey = process.env.NEXT_PUBLIC_NEWS_API_KEY;
+  const apiKey = process.env.NEWS_API_KEY;
 
   if (!apiKey) {
     return NextResponse.json({ error: 'News API key not configured' }, { status: 500 });

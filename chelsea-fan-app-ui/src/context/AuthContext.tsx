@@ -1,11 +1,15 @@
 'use client';
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { getSupabase } from '@/lib/supabaseClient';
 import { User, AuthError } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<{ error: AuthError | null } | undefined>;
+  signup: (
+    email: string,
+    password: string
+  ) => Promise<{ error: AuthError | null; needsConfirmation: boolean }>;
   logout: () => Promise<void>;
 }
 
@@ -15,6 +19,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    const supabase = getSupabase();
     supabase.auth.getSession().then(({ data }) => {
       setUser(data.session?.user ?? null);
     });
@@ -27,16 +32,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await getSupabase().auth.signInWithPassword({ email, password });
     return { error };
   };
 
+  const signup = async (email: string, password: string) => {
+    const { data, error } = await getSupabase().auth.signUp({ email, password });
+    // With email confirmation enabled Supabase returns no session until the
+    // user clicks through, so the caller has to prompt instead of redirecting.
+    return { error, needsConfirmation: !error && !data.session };
+  };
+
   const logout = async () => {
-    await supabase.auth.signOut();
+    await getSupabase().auth.signOut();
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );

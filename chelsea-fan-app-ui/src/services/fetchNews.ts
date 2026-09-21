@@ -98,16 +98,13 @@ const FALLBACK_NEWS: NewsItem[] = [
 
 export async function fetchNews(): Promise<NewsItem[]> {
   try {
-    // First try to get real data from News API
-    if (process.env.NEXT_PUBLIC_NEWS_API_KEY) {
-      try {
-        const apiArticles = await fetchChelseaNews();
-        if (apiArticles.length > 0) {
-          return apiArticles.map((article) => transformNewsArticle(article));
-        }
-      } catch (apiError) {
-        console.error('News API error, falling back to database:', apiError);
+    try {
+      const apiArticles = await fetchChelseaNews();
+      if (apiArticles.length > 0) {
+        return apiArticles.map((article) => transformNewsArticle(article));
       }
+    } catch (apiError) {
+      console.error('News API error, falling back to database:', apiError);
     }
 
     // Try to get data from Supabase
