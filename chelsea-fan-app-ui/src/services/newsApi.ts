@@ -51,8 +51,10 @@ export async function fetchChelseaNews(): Promise<NewsApiArticle[]> {
   }
 }
 
-// Trusted image domains for news
-const TRUSTED_NEWS_DOMAINS = [
+// These two lists must stay in sync with images.remotePatterns in next.config.js.
+// next/image rejects any host that is not configured there, so trusting a host
+// here that the config does not allow produces a broken image rather than a photo.
+const TRUSTED_IMAGE_HOSTS = [
   'images.unsplash.com',
   'upload.wikimedia.org',
   'icdn.chelsea.news',
@@ -61,129 +63,53 @@ const TRUSTED_NEWS_DOMAINS = [
   'photobooth-api.onefootball.com',
   'imageio.forbes.com',
   'phantom-marca.uecdn.es',
-  'cdn.chelseafc.com',
-  'www.chelseafc.com',
-  'static.chelseafc.com',
 ];
 
-// Check if image URL is from trusted domain and auto-add if it looks reliable
-async function isTrustedNewsImageUrl(url: string): Promise<boolean> {
+// Matched one subdomain level deep, mirroring the '*.example.com' patterns.
+const TRUSTED_PARENT_DOMAINS = [
+  'chelseafc.com',
+  'premierleague.com',
+  'football.london',
+  'theguardian.com',
+  'telegraph.co.uk',
+  'independent.co.uk',
+  'dailymail.co.uk',
+  'eveningstandard.co.uk',
+  'standard.co.uk',
+  'mirror.co.uk',
+  'metro.co.uk',
+  'forbes.com',
+  'bbc.com',
+  'sky.com',
+  'espn.com',
+  'goal.com',
+  'uefa.com',
+  'fifa.com',
+];
+
+function isTrustedNewsImageUrl(url: string): boolean {
   if (!url) return false;
+
   try {
     const hostname = new URL(url).hostname;
-    
-    // Check if already trusted
-    if (TRUSTED_NEWS_DOMAINS.some(domain => hostname === domain)) {
+
+    if (TRUSTED_IMAGE_HOSTS.includes(hostname)) {
       return true;
     }
-    
-    // Auto-add reliable news domains
-    const reliableNewsDomains = [
-      'images.unsplash.com',
-      'upload.wikimedia.org',
-      'icdn.chelsea.news',
-      'img.chelseafc.com',
-      'cdn.chelseafc.com',
-      'www.chelseafc.com',
-      'static.chelseafc.com',
-      'resources.chelsea.news',
-      'images.chelseafc.com',
-      'media.chelseafc.com',
-      'assets.chelseafc.com',
-      'images.premierleague.com',
-      'media.premierleague.com',
-      'static.premierleague.com',
-      'cdn.premierleague.com',
-      'assets.premierleague.com',
-      'images.bbc.com',
-      'media.bbc.com',
-      'static.bbc.com',
-      'cdn.bbc.com',
-      'assets.bbc.com',
-      'images.sky.com',
-      'media.sky.com',
-      'static.sky.com',
-      'cdn.sky.com',
-      'assets.sky.com',
-      'images.goal.com',
-      'media.goal.com',
-      'static.goal.com',
-      'cdn.goal.com',
-      'assets.goal.com',
-      'images.espn.com',
-      'media.espn.com',
-      'static.espn.com',
-      'cdn.espn.com',
-      'assets.espn.com',
-      'images.theguardian.com',
-      'media.theguardian.com',
-      'static.theguardian.com',
-      'cdn.theguardian.com',
-      'assets.theguardian.com',
-      'images.independent.co.uk',
-      'media.independent.co.uk',
-      'static.independent.co.uk',
-      'cdn.independent.co.uk',
-      'assets.independent.co.uk',
-      'images.telegraph.co.uk',
-      'media.telegraph.co.uk',
-      'static.telegraph.co.uk',
-      'cdn.telegraph.co.uk',
-      'assets.telegraph.co.uk',
-      'images.mirror.co.uk',
-      'media.mirror.co.uk',
-      'static.mirror.co.uk',
-      'cdn.mirror.co.uk',
-      'assets.mirror.co.uk',
-      'images.dailymail.co.uk',
-      'media.dailymail.co.uk',
-      'static.dailymail.co.uk',
-      'cdn.dailymail.co.uk',
-      'assets.dailymail.co.uk',
-      'images.thesun.co.uk',
-      'media.thesun.co.uk',
-      'static.thesun.co.uk',
-      'cdn.thesun.co.uk',
-      'assets.thesun.co.uk',
-      'images.standard.co.uk',
-      'media.standard.co.uk',
-      'static.standard.co.uk',
-      'cdn.standard.co.uk',
-      'assets.standard.co.uk',
-      'images.eveningstandard.co.uk',
-      'media.eveningstandard.co.uk',
-      'static.eveningstandard.co.uk',
-      'cdn.eveningstandard.co.uk',
-      'assets.eveningstandard.co.uk',
-    ];
-    
-    if (reliableNewsDomains.some(domain => hostname === domain)) {
-      // Auto-add to trusted domains
-      try {
-        await fetch('/api/football/trust-domain', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ domain: hostname })
-        });
-      } catch {
-        // Silently fail if auto-adding domain fails
-      }
-      return true;
-    }
-    
-    return false;
+
+    const parentDomain = hostname.split('.').slice(1).join('.');
+    return TRUSTED_PARENT_DOMAINS.includes(parentDomain);
   } catch {
     return false;
   }
 }
 
-
-
 // Transform news API data to our app's format
-export async function transformNewsArticle(article: NewsApiArticle) {
-  // Check if image URL is from a trusted domain, otherwise use Chelsea logo
-  const isTrusted = await isTrustedNewsImageUrl(article.urlToImage || '');
-  const safeImageUrl = isTrusted ? article.urlToImage : '/chelsea-logo.png';
+export function transformNewsArticle(article: NewsApiArticle) {
+  // Fall back to the Chelsea logo for images next/image is not configured to load
+  const safeImageUrl = isTrustedNewsImageUrl(article.urlToImage || '')
+    ? article.urlToImage
+    : '/chelsea-logo.png';
 
   // Generate stable ID based on article URL (hash) to ensure consistency
   // This way, the same article will always have the same ID

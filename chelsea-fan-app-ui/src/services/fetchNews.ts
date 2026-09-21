@@ -103,8 +103,7 @@ export async function fetchNews(): Promise<NewsItem[]> {
       try {
         const apiArticles = await fetchChelseaNews();
         if (apiArticles.length > 0) {
-          const transformedArticles = await Promise.all(apiArticles.map(transformNewsArticle));
-          return transformedArticles;
+          return apiArticles.map((article) => transformNewsArticle(article));
         }
       } catch (apiError) {
         console.error('News API error, falling back to database:', apiError);
