@@ -4,6 +4,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
+import Avatar from "@/components/Avatar";
+import { publicProfilePath } from "@/lib/chelseaProfile";
 
 const links = [
   { href: "/news", label: "News" },
@@ -13,11 +15,14 @@ const links = [
 ];
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const isActive = (href: string) => pathname === href;
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const username = profile?.username || "Profile";
+  const profileHref = profile?.username ? publicProfilePath(profile.username) : "/profile";
+  const onProfile = pathname === "/profile" || pathname === profileHref;
 
   return (
     <nav className="sticky top-0 z-40 border-b border-blue-800/50 bg-blue-700/95 text-white shadow-lg shadow-blue-900/20 backdrop-blur">
@@ -60,14 +65,25 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-3 md:flex">
           {user ? (
-            <button
-              onClick={logout}
-              className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
-            >
-              Logout
-            </button>
+            <>
+              <Link
+                href={profileHref}
+                className={`flex items-center gap-2 rounded-full py-1 pr-3 pl-1 text-sm font-semibold transition ${
+                  onProfile ? "bg-white text-blue-700" : "text-white hover:bg-white/10"
+                }`}
+              >
+                <Avatar name={username} url={profile?.avatar_url} size={28} />
+                <span className="max-w-[9rem] truncate">@{username}</span>
+              </Link>
+              <button
+                onClick={logout}
+                className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <Link
               href="/login"
@@ -95,15 +111,27 @@ export default function Navbar() {
               </Link>
             ))}
             {user ? (
-              <button
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  logout();
-                }}
-                className="mt-2 rounded-lg bg-white px-3 py-2 text-left text-sm font-semibold text-blue-700"
-              >
-                Logout
-              </button>
+              <>
+                <Link
+                  href={profileHref}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`mt-2 flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold ${
+                    onProfile ? "bg-white text-blue-700" : "hover:bg-white/10"
+                  }`}
+                >
+                  <Avatar name={username} url={profile?.avatar_url} size={28} />
+                  @{username}
+                </Link>
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    logout();
+                  }}
+                  className="rounded-lg bg-white px-3 py-2 text-left text-sm font-semibold text-blue-700"
+                >
+                  Logout
+                </button>
+              </>
             ) : (
               <Link
                 href="/login"

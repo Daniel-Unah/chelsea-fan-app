@@ -2,12 +2,9 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { safeNext } from "@/lib/safeNext";
 import Link from "next/link";
 import Image from "next/image";
-
-function safeNext(value: string | null) {
-  return value && value.startsWith("/") && !value.startsWith("//") ? value : "/";
-}
 
 function LoginForm() {
   const [email, setEmail] = useState("");

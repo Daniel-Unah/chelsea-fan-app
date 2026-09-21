@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import Avatar from '@/components/Avatar';
+import { publicProfilePath } from '@/lib/chelseaProfile';
 import {
   MatchComment,
   MatchSort,
@@ -83,9 +85,12 @@ function CommentCard({
   return (
     <article className={depth > 0 ? 'border-l-2 border-blue-200 pl-4 dark:border-blue-900' : ''}>
       <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800/70">
-        <div className="mb-1 flex items-center justify-between gap-3">
-          <p className="text-sm font-semibold text-gray-900 dark:text-white">{comment.display_name}</p>
-          <p className="text-xs text-gray-500">{timeLabel(comment.created_at)}</p>
+        <div className="mb-2 flex items-start justify-between gap-3">
+          <Link href={publicProfilePath(comment.username)} className="flex min-w-0 items-center gap-2.5 hover:opacity-80">
+            <Avatar name={comment.username} url={comment.avatar_url} size={36} />
+            <p className="truncate text-sm font-semibold text-gray-900 dark:text-white">@{comment.username}</p>
+          </Link>
+          <p className="shrink-0 text-xs text-gray-500">{timeLabel(comment.created_at)}</p>
         </div>
         <p className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300">{comment.content}</p>
         <div className="mt-3 flex items-center gap-3 text-xs font-semibold">
@@ -109,7 +114,7 @@ function CommentCard({
         {replying && (
           <div className="mt-3">
             <Composer
-              placeholder={`Reply to ${comment.display_name}...`}
+              placeholder={`Reply to @${comment.username}...`}
               onSubmit={async (content) => {
                 await onReply(comment.id, content);
                 setReplying(false);

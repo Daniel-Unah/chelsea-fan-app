@@ -1,4 +1,5 @@
 import { getSupabase } from '@/lib/supabaseClient';
+import type { Profile } from '@/services/profiles';
 
 export type MatchSort = 'recent' | 'top';
 
@@ -10,7 +11,8 @@ export interface MatchComment {
   content: string;
   score: number;
   created_at: string;
-  display_name: string;
+  username: string;
+  avatar_url: string | null;
   liked_by_me: boolean;
   replies: MatchComment[];
 }
@@ -23,13 +25,16 @@ type CommentRow = {
   content: string;
   score: number;
   created_at: string;
-  profile?: { display_name: string } | { display_name: string }[] | null;
+  profile?: Pick<Profile, 'username' | 'avatar_url'> | Pick<Profile, 'username' | 'avatar_url'>[] | null;
   votes?: { user_id: string }[] | null;
 };
 
-function displayNameFrom(row: CommentRow) {
+function profileFrom(row: CommentRow) {
   const profile = Array.isArray(row.profile) ? row.profile[0] : row.profile;
-  return profile?.display_name || 'Blue';
+  return {
+    username: profile?.username || 'blue',
+    avatar_url: profile?.avatar_url || null,
+  };
 }
 
 function toComment(row: CommentRow, userId?: string): MatchComment {
@@ -41,7 +46,7 @@ function toComment(row: CommentRow, userId?: string): MatchComment {
     content: row.content,
     score: row.score,
     created_at: row.created_at,
-    display_name: displayNameFrom(row),
+    ...profileFrom(row),
     liked_by_me: Boolean(userId && row.votes?.some((vote) => vote.user_id === userId)),
     replies: [],
   };
@@ -90,21 +95,28 @@ async function currentUserId() {
   return data.user?.id;
 }
 
-async function ensureProfile() {
+async function currentIdentity() {
   const { data } = await getSupabase().auth.getUser();
   const user = data.user;
   if (!user) throw new Error('You need to be logged in to join the match thread.');
 
-  const displayName = (user.email?.split('@')[0] || 'Blue').slice(0, 40);
-  await getSupabase().from('profiles').upsert({ id: user.id, display_name: displayName });
-  return user;
+  const { data: profile, error } = await getSupabase()
+    .from('profiles')
+    .select('id, username, avatar_url')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!profile) throw new Error('Finish setting up your profile before posting.');
+
+  return { user, profile: profile as Profile };
 }
 
 export async function fetchMatchComments(fixtureId: number, sort: MatchSort): Promise<MatchComment[]> {
   const userId = await currentUserId();
   const { data, error } = await getSupabase()
     .from('match_comments')
-    .select('id, fixture_id, user_id, parent_id, content, score, created_at, profile:profiles(display_name), votes:match_comment_votes(user_id)')
+    .select('id, fixture_id, user_id, parent_id, content, score, created_at, profile:profiles(username, avatar_url), votes:match_comment_votes(user_id)')
     .eq('fixture_id', fixtureId);
 
   if (error) throw new Error(error.message);
@@ -116,8 +128,7 @@ export async function postMatchComment(
   content: string,
   parentId?: number | null
 ): Promise<MatchComment> {
-  const user = await ensureProfile();
-  const displayName = (user.email?.split('@')[0] || 'Blue').slice(0, 40);
+  const { user, profile } = await currentIdentity();
 
   const { data, error } = await getSupabase()
     .from('match_comments')
@@ -133,15 +144,16 @@ export async function postMatchComment(
   if (error) throw new Error(error.message);
 
   return {
-    ...(data as Omit<MatchComment, 'display_name' | 'liked_by_me' | 'replies'>),
-    display_name: displayName,
+    ...(data as Omit<MatchComment, 'username' | 'avatar_url' | 'liked_by_me' | 'replies'>),
+    username: profile.username,
+    avatar_url: profile.avatar_url,
     liked_by_me: false,
     replies: [],
   };
 }
 
 export async function toggleMatchCommentLike(commentId: number, liked: boolean) {
-  const user = await ensureProfile();
+  const { user } = await currentIdentity();
 
   if (liked) {
     const { error } = await getSupabase()
